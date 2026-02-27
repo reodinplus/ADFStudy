@@ -1,0 +1,36 @@
+{
+	"name": "adfdemo_willasql_ds_zjh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst_zjh",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "adfdemo_stg_sales"
+			}
+		},
+		"folder": {
+			"name": "database_zjh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,40 @@
+{
+	"name": "adfdemo_asql_dataset_ds_wxh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sqldb_dw_wxh",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"server": "azuresqlstxserver.database.windows.net",
+				"dbName": "adfstudy",
+				"uerName": "cdstx",
+				"pwd": "1qaz!QAZ"
+			}
+		},
+		"parameters": {
+			"schema": {
+				"type": "string"
+			},
+			"table": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "dataset_wxh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

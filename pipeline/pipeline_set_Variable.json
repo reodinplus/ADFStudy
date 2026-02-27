@@ -1,0 +1,50 @@
+{
+	"name": "pipeline_set_Variable",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "num",
+					"value": {
+						"value": "@variables('name')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"year": {
+				"type": "int",
+				"defaultValue": 2024
+			},
+			"test": {
+				"type": "string",
+				"defaultValue": "学习"
+			}
+		},
+		"variables": {
+			"num": {
+				"type": "Integer",
+				"defaultValue": 10
+			},
+			"name": {
+				"type": "String",
+				"defaultValue": "罗"
+			}
+		},
+		"folder": {
+			"name": "pipeline_lzw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-08T08:10:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

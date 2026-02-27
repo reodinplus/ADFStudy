@@ -1,0 +1,336 @@
+{
+	"name": "increament_loop_blob_excel_to_asql_adfdemo_stg_sales",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata Files",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Lookup Max LastModifyTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adfdemo_storage_ds_wk",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": "SaleTest",
+							"file": " ",
+							"sheet": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"modifiedDatetimeStart": {
+							"value": "@addSeconds(activity('Lookup Max LastModifyTime').output.firstRow.max_file_last_modifty_time,1)",
+							"type": "Expression"
+						},
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Filter file by extendname",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata Files').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name,'xlsx')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter file by extendname",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter file by extendname').output.Value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Metadata1",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adfdemo_storage_ds_wk",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": "SaleTest",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"sheet": "Sheet1"
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{'adfdemo'}/@{'SaleTest'}/@{item().name}"
+								},
+								{
+									"name": "Destination",
+									"value": "@{'dbo'}.@{'adfdemo_stg_sales_w'}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"additionalColumns": [
+										{
+											"name": "file_name",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "file_last_modifty_time",
+											"value": {
+												"value": "@activity('Get Metadata1').output.lastModified",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "file_name",
+												"type": "String"
+											},
+											"sink": {
+												"name": "file_name",
+												"type": "String",
+												"physicalType": "nvarchar"
+											}
+										},
+										{
+											"source": {
+												"name": "file_last_modifty_time",
+												"type": "String"
+											},
+											"sink": {
+												"name": "file_last_modifty_time",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "Produnctld",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "product_id",
+												"type": "Int32",
+												"physicalType": "int"
+											}
+										},
+										{
+											"source": {
+												"name": "Qty",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "qty",
+												"type": "Int32",
+												"physicalType": "int"
+											}
+										},
+										{
+											"source": {
+												"name": "UnitPrice",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "unit_price",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 4,
+												"precision": 19
+											}
+										},
+										{
+											"source": {
+												"name": "SubTotal",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "subtotal",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 4,
+												"precision": 19
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfdemo_storage_ds_wk",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": "SaleTest",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"sheet": "Sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adfdemo_asql_wk",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "adfdemo_stg_sales_w"
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Lookup Max LastModifyTime",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "\nSELECT ISNULL(MAX(file_last_modifty_time),'1900-01-01') max_file_last_modifty_time FROM [dbo].adfdemo_stg_sales_w",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_asql_wk",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "adfdemo_stg_sales_w"
+						}
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "pipeline_wk"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-29T05:45:12Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

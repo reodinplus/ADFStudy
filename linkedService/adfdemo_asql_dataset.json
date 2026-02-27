@@ -1,0 +1,35 @@
+{
+	"name": "adfdemo_asql_dataset",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"dbName": {
+				"type": "string",
+				"defaultValue": "adfstudy"
+			},
+			"dbServerName": {
+				"type": "string",
+				"defaultValue": "azuresqlstxserver.database.windows.net"
+			},
+			"dbUserName": {
+				"type": "string",
+				"defaultValue": "cdstx"
+			},
+			"dbUserPwd": {
+				"type": "string",
+				"defaultValue": "1qaz!QAZ"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "@{linkedService().dbServerName}",
+			"database": "@{linkedService().dbName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().dbUserName}",
+			"password": "@{linkedService().dbUserPwd}"
+		}
+	}
+}

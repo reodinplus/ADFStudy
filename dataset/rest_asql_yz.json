@@ -1,0 +1,66 @@
+{
+	"name": "rest_asql_yz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adedemo_dataset_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tabename": {
+				"type": "string",
+				"defaultValue": "dbo.rest_to_asql_yz"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "origin",
+				"type": "nvarchar"
+			},
+			{
+				"name": "content",
+				"type": "nvarchar"
+			},
+			{
+				"name": "created_at",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "updated_at",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().tabename,'.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().tabename,'.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,121 @@
+{
+	"name": "ETL_Process_Get",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get ProcessId",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": {
+							"value": "@variables('ProcessInsertProcName')",
+							"type": "Expression"
+						},
+						"storedProcedureParameters": {
+							"BatchId": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.BatchId",
+									"type": "Expression"
+								}
+							},
+							"PipelineName": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.PipelineName",
+									"type": "Expression"
+								}
+							},
+							"StateId": {
+								"type": "Byte",
+								"value": "1"
+							},
+							"TableName": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.TableName",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_DW",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableNameWithSchema": "."
+						}
+					}
+				}
+			},
+			{
+				"name": "Set ReturnValue",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get ProcessId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "ProcessId",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('Get ProcessId').output.firstRow.ProcessId"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			}
+		],
+		"parameters": {
+			"BatchId": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"PipelineName": {
+				"type": "string",
+				"defaultValue": "ADF"
+			},
+			"TableName": {
+				"type": "string",
+				"defaultValue": "ADF"
+			}
+		},
+		"variables": {
+			"ProcessInsertProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_Process_Insert"
+			}
+		},
+		"folder": {
+			"name": "1-Utils Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-29T11:28:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

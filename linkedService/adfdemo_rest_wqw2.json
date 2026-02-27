@@ -1,0 +1,13 @@
+{
+	"name": "adfdemo_rest_wqw2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://opentdb.com/api.php?amount=10&category=10&difficulty=easy&type=multiple",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

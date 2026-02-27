@@ -1,0 +1,36 @@
+{
+	"name": "adfdemo_asql_dataset_src_jbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_src_jbl",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schame": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "data_destination_table_jbl"
+			}
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schame",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,261 @@
+{
+	"name": "pipeline_full_loop_allfile_entity_excel_to_mssql_fzx",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get_Table_List",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT 'dbo.STG_Sales_Product' AS TableName, 'adfdemo' AS ContainName, N'产品数据' AS FolderName\nUNION ALL\nSELECT 'dbo.[STG_Sales_Order]' AS TableName, 'adfdemo' AS ContainName, N'订单数据' AS FolderName\nUNION ALL\nSELECT '[dbo].STG_Sales_Area' AS TableName, 'adfdemo' AS ContainName, N'地点数据' AS FolderName\nUNION ALL\nSELECT '[dbo].[STG_Sales_Customer]' AS TableName, 'adfdemo' AS ContainName, N'客户数据' AS FolderName ",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adf_asql_dataset_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": " ",
+							"TableName": "  "
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach_TableList",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_Table_List",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_Table_List').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set SchemaName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set FullTableName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "SchemaName",
+								"value": {
+									"value": "@substring(variables('FullTableName'),0,indexOf(variables('FullTableName'),'.'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set TableName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set SchemaName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TableName",
+								"value": {
+									"value": "@replace(replace(variables('FullTableName'),variables('SchemaName'),''),'.','')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Insert_Data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set TableName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"additionalColumns": [
+										{
+											"name": "InsertDate",
+											"value": {
+												"value": "@addHours(utcNow(),8)",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "UpdateDate",
+											"value": {
+												"value": "@addHours(utcNow(),8)",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat(pipeline().parameters.FolderName,'/',item().FolderName)",
+											"type": "Expression"
+										},
+										"wildcardFileName": {
+											"value": "@concat(pipeline().parameters.FileName,'.',pipeline().parameters.FileType)\n",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"preCopyScript": {
+										"value": "@concat('Truncate Table ',item().TableName)",
+										"type": "Expression"
+									},
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adf_blob_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"containname": {
+											"value": "@item().ContainName",
+											"type": "Expression"
+										},
+										"foldername": " ",
+										"filename": " "
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adf_mssql_test_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@variables('SchemaName')",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@variables('TableName')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Set FullTableName",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "FullTableName",
+								"value": {
+									"value": "@replace(replace(item().TableName,'[',''),']','')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "ssisfile"
+			},
+			"FileType": {
+				"type": "string",
+				"defaultValue": "xlsx"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "*"
+			}
+		},
+		"variables": {
+			"SchemaName": {
+				"type": "String"
+			},
+			"TableName": {
+				"type": "String"
+			},
+			"FullTableName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-07T03:51:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

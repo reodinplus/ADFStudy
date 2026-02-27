@@ -1,0 +1,36 @@
+{
+	"name": "asql_to_asql_ds_data_destination_table_wxh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst_wxh",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "data_destination_table_wxh"
+			}
+		},
+		"folder": {
+			"name": "dataset_wxh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

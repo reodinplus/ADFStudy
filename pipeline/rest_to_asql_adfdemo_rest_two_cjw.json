@@ -1,0 +1,121 @@
+{
+	"name": "rest_to_asql_adfdemo_rest_two_cjw",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Destination",
+						"value": "dbo.adfdemo_rest_two_cjw"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['type']"
+								},
+								"sink": {
+									"name": "type",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['difficulty']"
+								},
+								"sink": {
+									"name": "difficulty",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['category']"
+								},
+								"sink": {
+									"name": "category",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['question']"
+								},
+								"sink": {
+									"name": "question",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['correct_answer']"
+								},
+								"sink": {
+									"name": "correct_answer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['incorrect_answers']"
+								},
+								"sink": {
+									"name": "incorrect_answers",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['results']",
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adfdemo_rest_opentdb_com_cjw",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adfdemo_asql_rest_two_cjw",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "pipeline_cjw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-12T09:30:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

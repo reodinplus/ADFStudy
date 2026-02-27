@@ -1,0 +1,22 @@
+{
+	"name": "json_sql_table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "targetBlob",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "newsales"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,52 @@
+{
+	"name": "adfstudy_mssql_dataset_Flat_FileName_Out",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_mssql",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "One"
+			}
+		},
+		"parameters": {
+			"schemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"tableName": {
+				"type": "string",
+				"defaultValue": "Flat_FileName_Out"
+			}
+		},
+		"folder": {
+			"name": "dataset_study"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "A",
+				"type": "varchar"
+			},
+			{
+				"name": "B",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceFileName",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

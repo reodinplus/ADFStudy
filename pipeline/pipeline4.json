@@ -1,0 +1,136 @@
+{
+	"name": "pipeline4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "Truncate table @{variables('TableNameWithSchema')} where date  = '2045533'",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"DbName": "ADFStudy",
+							"TableNameWithSchema": "."
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"DbName": "ADFStudy",
+							"TableNameWithSchema": "dbo.Employee"
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy data2",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": false,
+							"wildcardFolderPath": "ssisfile/订单数据",
+							"wildcardFileName": "*.xlsx",
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adf_excel_to_asql_yz",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": " ",
+							"file": " ",
+							"sheetname": "Sheet1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_asql_yz",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableNameWithSchema": "dbo.order_data_yz"
+						}
+					}
+				]
+			}
+		],
+		"variables": {
+			"TableNameWithSchema": {
+				"type": "String",
+				"defaultValue": "dbo.Employee"
+			}
+		},
+		"folder": {
+			"name": "pipeline_dingzhiyou"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-07T10:12:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

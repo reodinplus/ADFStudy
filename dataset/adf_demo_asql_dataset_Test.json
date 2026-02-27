@@ -1,0 +1,41 @@
+{
+	"name": "adf_demo_asql_dataset_Test",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sqldb_dw_jbl",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbServername": "azuresqlstxserver.database.windows.net",
+				"dbName": "adfstudy",
+				"dbUserName": "cdstx",
+				"dbUserPasswd": "1qaz!QAZ"
+			}
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "age",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Test"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

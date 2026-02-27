@@ -1,0 +1,165 @@
+{
+	"name": "WeatherByCurrent_AzureSqlTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "WeatherByCurrent_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "STG_WeatherAPI_WeatherByCurrent"
+			}
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Date",
+				"type": "date"
+			},
+			{
+				"name": "Weather",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MinTemperature",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MaxTemperature",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Temperature",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Week",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Humidity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Air",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AirLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CarwashDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CarwashLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DressingDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DressingLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ExerciseDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ExerciseLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FluDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FluLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PM25",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PM10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Pressure",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Wind",
+				"type": "nvarchar"
+			},
+			{
+				"name": "speed",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UmbrellaDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UmbrellaLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UpdateTime",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UvDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UvLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Visibility",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DWInsertDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "DWUpdateDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "area",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

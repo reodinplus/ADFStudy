@@ -1,0 +1,42 @@
+{
+	"name": "asql_to_csv_yz_copy1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_excel_to_asql_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "ssisfile/产品数据"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "product.csv"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "datademo02.DAT",
+				"folderPath": "ecip",
+				"container": "adfdemo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,157 @@
+{
+	"name": "project_practice_mhy",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach Files",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Files').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data to AzureDB",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{'adfdemo'}/@{'Sheet1'}/@{'<filename>'}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.Product_mhy"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"wildcardFolderPath": {
+											"value": "@item().Directory",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.xlsx",
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfpractice_blob_dataset_src_mhy",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@item().Container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@item().Directory",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item().FileName",
+											"type": "Expression"
+										},
+										"SheetName": {
+											"value": "Sheet1",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adfpractice_asql_dst_mhy",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@split(item().TableNameWithSchema,'.')[0]",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@split(item().TableNameWithSchema,'.')[1] ",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Lookup Files",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT 'adfdemo'          AS Container,\r\n       N'ssisfile/产品数据'    AS Directory,\r\n       N'产品数据.xlsx'     AS Filename,\r\n       'dbo.Product_mhy'   AS TableNameWithSchema\r\nUNION ALL\r\nSELECT 'adfdemo'          AS Container,\r\n       N'ssisfile/地点数据'    AS Directory,\r\n       N'地点数据.xlsx'      AS Filename,\r\n       'dbo.Place_mhy'     AS TableNameWithSchema\r\nUNION ALL\r\nSELECT 'adfdemo'          AS Container,\r\n       N'ssisfile/订单数据'    AS Directory,\r\n       N'2016年订单数据.xlsx' AS Filename,\r\n       'dbo.Order_mhy'     AS TableNameWithSchema\r\nUNION ALL\r\nSELECT 'adfdemo'          AS Container,\r\n       N'ssisfile/客户数据'    AS Directory,\r\n       N'客户数据.xlsx'      AS Filename,\r\n       'dbo.Customer_mhy'  AS TableNameWithSchema",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfpractice_asql_dst_mhy",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": " ",
+							"TableName": " "
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"folder": {
+			"name": "pipeline_mhy/practice"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-07T09:29:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

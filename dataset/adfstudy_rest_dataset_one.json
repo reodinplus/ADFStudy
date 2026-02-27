@@ -1,0 +1,16 @@
+{
+	"name": "adfstudy_rest_dataset_one",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_rest",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_study"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

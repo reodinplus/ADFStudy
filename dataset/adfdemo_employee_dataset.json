@@ -1,0 +1,56 @@
+{
+	"name": "adfdemo_employee_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_demo_BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "employee"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "employee_2020.xlsx"
+			},
+			"sheet": {
+				"type": "string",
+				"defaultValue": "sheet1"
+			}
+		},
+		"folder": {
+			"name": "dataset_tx"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheet",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

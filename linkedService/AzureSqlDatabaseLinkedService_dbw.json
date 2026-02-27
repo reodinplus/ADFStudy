@@ -1,0 +1,35 @@
+{
+	"name": "AzureSqlDatabaseLinkedService_dbw",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"DBName": {
+				"type": "string",
+				"defaultValue": "sqldevswcd"
+			},
+			"UserName": {
+				"type": "string",
+				"defaultValue": "cdstx"
+			},
+			"Password": {
+				"type": "string",
+				"defaultValue": "1qaz!QAZ"
+			},
+			"FQDN": {
+				"type": "string",
+				"defaultValue": "azuresqlstxserver.database.windows.net"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "@{linkedService().FQDN}",
+			"database": "@{linkedService().DBName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().UserName}",
+			"password": "@{linkedService().Password}"
+		}
+	}
+}

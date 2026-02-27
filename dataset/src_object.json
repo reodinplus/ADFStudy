@@ -1,0 +1,99 @@
+{
+	"name": "src_object",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AdfDemo_asql_L",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"Server": "azuresqlstxserver.database.windows.net",
+				"DBname": "adfstudy",
+				"username": "cdstx",
+				"PWD": "1qaz!QAZ"
+			}
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"tablename": {
+				"type": "string",
+				"defaultValue": "src_object"
+			}
+		},
+		"folder": {
+			"name": "Dataset_L"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "object_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "principal_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "schema_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "parent_object_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "type",
+				"type": "char"
+			},
+			{
+				"name": "type_desc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "create_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "modify_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "is_ms_shipped",
+				"type": "bit"
+			},
+			{
+				"name": "is_published",
+				"type": "bit"
+			},
+			{
+				"name": "is_schema_published",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tablename",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

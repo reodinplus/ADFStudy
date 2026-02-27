@@ -1,0 +1,33 @@
+{
+	"name": "adfstudy_asql_dataset_Flat_FileName_Out",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_asql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_study"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "A",
+				"type": "varchar"
+			},
+			{
+				"name": "B",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceFileName",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Flat_FileName_Out"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

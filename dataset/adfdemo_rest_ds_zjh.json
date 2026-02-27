@@ -1,0 +1,16 @@
+{
+	"name": "adfdemo_rest_ds_zjh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_rest_zjh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_zjh"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

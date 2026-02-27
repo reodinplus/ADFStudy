@@ -1,0 +1,51 @@
+{
+	"name": "asql_to_csv_yz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_excel_to_asql_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "ssisfile/产品数据"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "product.csv"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

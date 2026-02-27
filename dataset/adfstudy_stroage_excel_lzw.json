@@ -1,0 +1,25 @@
+{
+	"name": "adfstudy_stroage_excel_lzw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_copy_lzw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_lzw"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Employee Demo.xlsx",
+				"container": "adfdemo"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

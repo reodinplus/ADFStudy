@@ -1,0 +1,275 @@
+{
+	"name": "folder_to_asql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adfdemo_blob_ds_saless",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": "saless",
+							"file": " ",
+							"sheet": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{'adfdemo'}/@{'saless'}/@{item().name}"
+								},
+								{
+									"name": "Destination",
+									"value": "@{'dbo'}.@{'adfdemo_salesx'}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"additionalColumns": [
+										{
+											"name": "file_name",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "file_last_modify_time",
+											"value": {
+												"value": "@addhours(activity('Get Metadata2').output.lastModified,8)",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "file_name",
+												"type": "String"
+											},
+											"sink": {
+												"name": "file_name",
+												"type": "String",
+												"physicalType": "nvarchar"
+											}
+										},
+										{
+											"source": {
+												"name": "file_last_modify_time",
+												"type": "String"
+											},
+											"sink": {
+												"name": "file_last_modify_time",
+												"type": "DateTime",
+												"physicalType": "datetime"
+											}
+										},
+										{
+											"source": {
+												"name": "productId",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "productId",
+												"type": "Int32",
+												"physicalType": "int"
+											}
+										},
+										{
+											"source": {
+												"name": "qty",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "qty",
+												"type": "Int32",
+												"physicalType": "int"
+											}
+										},
+										{
+											"source": {
+												"name": "price",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "price",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 0,
+												"precision": 18
+											}
+										},
+										{
+											"source": {
+												"name": "subtotal",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "subtotal",
+												"type": "Decimal",
+												"physicalType": "decimal",
+												"scale": 0,
+												"precision": 18
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfdemo_blob_ds_saless",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": "saless",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"sheet": "sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adfdemo_asql_ds_salesx",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "adfdemo_salesx"
+									}
+								}
+							]
+						},
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adfdemo_blob_ds_saless",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": "saless",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"sheet": " "
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "pipeline_xwx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-13T01:41:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

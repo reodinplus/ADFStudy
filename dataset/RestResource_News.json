@@ -1,0 +1,19 @@
+{
+	"name": "RestResource_News",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestService_News",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "/api/news"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

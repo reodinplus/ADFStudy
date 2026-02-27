@@ -1,0 +1,518 @@
+{
+	"name": "increament3_loop_blob_excel_to_asql_L",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adfdemo_storage_ds_L",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": "Sales_L",
+							"file": " ",
+							"sheet": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Filter1",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().name,'.xlsx')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adfdemo_storage_ds_L",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": "Sales_L",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"sheet": " "
+									}
+								},
+								"fieldList": [
+									"lastModified",
+									"itemName"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@variables('IFSuccess')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Copy data2",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "ExcelSource",
+												"additionalColumns": [
+													{
+														"name": "filename",
+														"value": {
+															"value": "@activity('Get Metadata2').output.itemName",
+															"type": "Expression"
+														}
+													},
+													{
+														"name": "modifytime",
+														"value": {
+															"value": "@addHours(activity('Get Metadata2').output.lastModified,8)",
+															"type": "Expression"
+														}
+													}
+												],
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "upsert",
+												"upsertSettings": {
+													"useTempDB": false,
+													"keys": [
+														"product_id"
+													],
+													"interimSchemaName": "dbo"
+												},
+												"sqlWriterUseTableLock": false,
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "adfdemo_storage_ds_L",
+												"type": "DatasetReference",
+												"parameters": {
+													"container": "adfdemo",
+													"directory": "Sales_L",
+													"file": {
+														"value": "@activity('Get Metadata2').output.itemName",
+														"type": "Expression"
+													},
+													"sheet": "Sheet1"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "adfdemo_asql_ds_L",
+												"type": "DatasetReference",
+												"parameters": {
+													"schema": "dbo",
+													"tablename": "adfdemo_stg_sale_L"
+												}
+											}
+										]
+									},
+									{
+										"name": "Set variable2",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Copy data2",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "IFSuccess",
+											"value": true
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Copy data1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "ExcelSource",
+												"additionalColumns": [
+													{
+														"name": "filename",
+														"value": {
+															"value": "@activity('Get Metadata2').output.itemName",
+															"type": "Expression"
+														}
+													},
+													{
+														"name": "modifytime",
+														"value": {
+															"value": "@addHours(activity('Get Metadata2').output.lastModified,8)",
+															"type": "Expression"
+														}
+													}
+												],
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "upsert",
+												"upsertSettings": {
+													"useTempDB": false,
+													"keys": [
+														"product_id"
+													],
+													"interimSchemaName": "dbo"
+												},
+												"sqlWriterUseTableLock": false,
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "filename",
+															"type": "String"
+														},
+														"sink": {
+															"name": "file_name",
+															"type": "String",
+															"physicalType": "nvarchar"
+														}
+													},
+													{
+														"source": {
+															"name": "modifytime",
+															"type": "String"
+														},
+														"sink": {
+															"name": "file_last_modifty_time",
+															"type": "DateTime",
+															"physicalType": "datetime"
+														}
+													},
+													{
+														"source": {
+															"name": "Produnctld",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "product_id",
+															"type": "Int32",
+															"physicalType": "int"
+														}
+													},
+													{
+														"source": {
+															"name": "Qty",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "qty",
+															"type": "Int32",
+															"physicalType": "int"
+														}
+													},
+													{
+														"source": {
+															"name": "UnitPrice",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "unit_price",
+															"type": "Decimal",
+															"physicalType": "decimal",
+															"scale": 4,
+															"precision": 19
+														}
+													},
+													{
+														"source": {
+															"name": "SubTotal",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "subtotal",
+															"type": "Decimal",
+															"physicalType": "decimal",
+															"scale": 4,
+															"precision": 19
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "adfdemo_storage_ds_L",
+												"type": "DatasetReference",
+												"parameters": {
+													"container": "adfdemo",
+													"directory": "Sales_L",
+													"file": {
+														"value": "@activity('Get Metadata2').output.itemName",
+														"type": "Expression"
+													},
+													"sheet": "Sheet1"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "adfdemo_asql_ds_L",
+												"type": "DatasetReference",
+												"parameters": {
+													"schema": "dbo",
+													"tablename": "adfdemo_stg_sale_L"
+												}
+											}
+										]
+									},
+									{
+										"name": "Set variable1",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Copy data1",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "IFSuccess",
+											"value": false
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Copy data3",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "If Condition1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"deleteFilesAfterCompletion": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Sale",
+									"type": "DatasetReference",
+									"parameters": {
+										"bolbname": "adfdemo",
+										"dicretory": "Sales_L",
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "goal",
+									"type": "DatasetReference",
+									"parameters": {
+										"blobname": "adfdemo",
+										"dicretory": {
+											"value": "@if(variables('IFSuccess'),'Success','False')",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"IFSuccess": {
+				"type": "Boolean",
+				"defaultValue": true
+			}
+		},
+		"folder": {
+			"name": "Pipeline_L"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-16T09:43:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

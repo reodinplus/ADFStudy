@@ -1,0 +1,20 @@
+{
+	"name": "trigger2_cjw",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 1,
+			"startTime": "2025-08-15T05:52:00Z",
+			"delay": "00:00:30",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"count": 1,
+				"intervalInSeconds": 30
+			},
+			"dependsOn": []
+		}
+	}
+}

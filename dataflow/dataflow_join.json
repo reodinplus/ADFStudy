@@ -1,0 +1,121 @@
+{
+	"name": "dataflow_join",
+	"properties": {
+		"folder": {
+			"name": "dataflow_lh"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          name as string,",
+				"          object_id as integer,",
+				"          principal_id as integer,",
+				"          schema_id as integer,",
+				"          parent_object_id as integer,",
+				"          type as string,",
+				"          type_desc as string,",
+				"          create_date as timestamp,",
+				"          modify_date as timestamp,",
+				"          is_ms_shipped as boolean,",
+				"          is_published as boolean,",
+				"          is_schema_published as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_object_lh',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
+				"source(output(",
+				"          name as string,",
+				"          object_id as integer,",
+				"          principal_id as integer,",
+				"          schema_id as integer,",
+				"          parent_object_id as integer,",
+				"          type as string,",
+				"          type_desc as string,",
+				"          create_date as timestamp,",
+				"          modify_date as timestamp,",
+				"          is_ms_shipped as boolean,",
+				"          is_published as boolean,",
+				"          is_schema_published as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'query',",
+				"     store: 'sqlserver',",
+				"     query: 'select * from sys.objects where is_ms_shipped = 0',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source2",
+				"source1, source2 join(source1@name == source2@name,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          name = source1@name,",
+				"          object_id = source1@object_id,",
+				"          principal_id = source1@principal_id,",
+				"          schema_id = source1@schema_id,",
+				"          parent_object_id = source1@parent_object_id,",
+				"          type = source1@type,",
+				"          type_desc = source1@type_desc,",
+				"          create_date = source1@create_date,",
+				"          modify_date = source1@modify_date,",
+				"          is_ms_shipped = source1@is_ms_shipped,",
+				"          is_published = source1@is_published,",
+				"          is_schema_published = source1@is_schema_published",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_object_lh',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

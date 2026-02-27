@@ -1,0 +1,109 @@
+{
+	"name": "pipeline_lookup",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_asql_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaName": "dbo",
+							"tableName": "EmployeeDemo_x"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.RouteSelect,'Y')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "name",
+								"value": [
+									"N"
+								]
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "name",
+								"value": [
+									"Y"
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"RouteSelect": {
+				"type": "string",
+				"defaultValue": "a"
+			}
+		},
+		"variables": {
+			"name": {
+				"type": "Array",
+				"defaultValue": [
+					"大",
+					"dog",
+					"小小",
+					"cat"
+				]
+			}
+		},
+		"folder": {
+			"name": "pipeline_lzw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-10T10:03:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

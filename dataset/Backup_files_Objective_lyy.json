@@ -1,0 +1,46 @@
+{
+	"name": "Backup_files_Objective_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Backup_file_lyy",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"blol": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"dicretory": {
+				"type": "string",
+				"defaultValue": "Sales_lyy/bak"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "Sale"
+			}
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dicretory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().blol",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

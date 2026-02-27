@@ -1,0 +1,45 @@
+{
+	"name": "adfdemo_asql_rest_two_cjw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_rest_two",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_cjw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "difficulty",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question",
+				"type": "nvarchar"
+			},
+			{
+				"name": "correct_answer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "incorrect_answers",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfdemo_rest_two_cjw"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

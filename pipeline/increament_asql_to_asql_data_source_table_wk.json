@@ -1,0 +1,112 @@
+{
+	"name": "increament_asql_to_asql_data_source_table_wk",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Max LastModifytime",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(LastModifytime),'1900-01-01') MaxLastModifytime FROM dbo.data_destination_table_wk",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_asql_dataset_wk",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup Max LastModifytime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{'dbo'}.@{'data_source_table_wk'}"
+					},
+					{
+						"name": "Destination",
+						"value": "@{'dbo'}.@{'data_destination_table_wk'}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT * FROM dbo.data_source_table_wk WHERE LastModifytime>\n'@{activity('Lookup Max LastModifytime').output.firstRow.MaxLastModifytime}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adfdemo_asql_source_wk",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_source_table_wk"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adfdemo_asql_ds_wk",
+						"type": "DatasetReference",
+						"parameters": {
+							"schame": "dbo",
+							"table": "data_destination_table_wk"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "pipeline_wk"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-29T10:07:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

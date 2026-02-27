@@ -1,0 +1,31 @@
+{
+	"name": "SinkDataset2_dbw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLinkedService_dbw",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "sqldevswcd",
+				"UserName": "cdstx",
+				"Password": "1qaz!QAZ",
+				"FQDN": "azuresqlstxserver.database.windows.net"
+			}
+		},
+		"parameters": {
+			"SinkTableName": {
+				"type": "string"
+			},
+			"SchemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

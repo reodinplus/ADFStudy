@@ -1,0 +1,38 @@
+{
+	"name": "trigger_fzx",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline_full_loop_allfile_excel_to_mssql_fzx",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"DBName": "test",
+					"HostName": "SHOKA",
+					"SchemeName": "dbo",
+					"ContainName": "adfdemo",
+					"FolderName": "ssisfile",
+					"FileType": "xlsx",
+					"FileName": "*"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2025-01-07T03:51:00",
+				"timeZone": "China Standard Time",
+				"schedule": {
+					"monthDays": [
+						1
+					]
+				}
+			}
+		}
+	}
+}

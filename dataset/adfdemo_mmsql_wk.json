@@ -1,0 +1,34 @@
+{
+	"name": "adfdemo_mmsql_wk",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_mssql_wk",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_wk"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FitstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,73 @@
+{
+	"name": "adfdemo_storage_ds_lh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage_lh",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "Sales_lh"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "Sales_2020.xlsx"
+			},
+			"sheet": {
+				"type": "string",
+				"defaultValue": "Sheet1"
+			}
+		},
+		"folder": {
+			"name": "database_lh"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheet",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "product_id",
+				"type": "String"
+			},
+			{
+				"name": "qty",
+				"type": "String"
+			},
+			{
+				"name": "unit_price",
+				"type": "String"
+			},
+			{
+				"name": "subtotal",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

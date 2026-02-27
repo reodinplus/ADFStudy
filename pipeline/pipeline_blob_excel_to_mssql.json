@@ -1,0 +1,143 @@
+{
+	"name": "pipeline_blob_excel_to_mssql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup SalesMapping",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select FolderName,TableName from SalesMapping",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Destination_Data",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "AddressData",
+							"ShcemaName": "dbo"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup SalesMapping",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup SalesMapping').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{'adfdemo'}/@{concat('Sales_wqw/', item().FolderName)}/@{'<FileName>'}"
+								},
+								{
+									"name": "Destination",
+									"value": "@{'dbo'}.@{item().TableName}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"wildcardFolderPath": {
+											"value": "@concat('Sales_wqw/', item().FolderName)",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.xlsx",
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfdemo_storage_dataset_wqw",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"FolderName": {
+											"value": "@concat('Sales_wqw/', item().FolderName)",
+											"type": "Expression"
+										},
+										"Sheet": "Sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Destination_Data",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@item().TableName",
+											"type": "Expression"
+										},
+										"ShcemaName": "dbo"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "pipeline_wqw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-18T08:03:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

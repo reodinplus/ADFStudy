@@ -1,0 +1,41 @@
+{
+	"name": "trigger3_mhy",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pepiline_GetMetaData_demo_mhy",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 15,
+				"startTime": "2024-12-30T06:33:00",
+				"endTime": "2024-12-31T06:33:00",
+				"timeZone": "China Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						8,
+						15
+					],
+					"weekDays": [
+						"Monday",
+						"Tuesday",
+						"Thursday",
+						"Wednesday",
+						"Friday"
+					]
+				}
+			}
+		}
+	}
+}

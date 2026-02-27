@@ -1,0 +1,40 @@
+{
+	"name": "adfstudy_asql_pipelineVariable",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set Name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Name",
+					"value": {
+						"value": "@variables('Age')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Name": {
+				"type": "String",
+				"defaultValue": "Joe"
+			},
+			"Age": {
+				"type": "Integer",
+				"defaultValue": 21
+			}
+		},
+		"folder": {
+			"name": "pipeline_study"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-08T08:08:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

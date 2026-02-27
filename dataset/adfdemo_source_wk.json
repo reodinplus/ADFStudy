@@ -1,0 +1,36 @@
+{
+	"name": "adfdemo_source_wk",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst_wk",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_wk"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PersonID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "LastModifytime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "data_destination_table_wk_1"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

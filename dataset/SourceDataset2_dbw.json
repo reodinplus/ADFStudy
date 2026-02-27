@@ -1,0 +1,22 @@
+{
+	"name": "SourceDataset2_dbw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerLinkedService_dbw",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"ServerName": "LAPTOP-S8J3UAH7",
+				"DBName": "sqldevswcd",
+				"UserName": "sa",
+				"Password": "123456"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

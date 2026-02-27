@@ -1,0 +1,119 @@
+{
+	"name": "ETL_Batch_Get",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get BatchId",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": {
+							"value": "@variables('BatchInsertProcName')",
+							"type": "Expression"
+						},
+						"storedProcedureParameters": {
+							"Caller": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.Caller",
+									"type": "Expression"
+								}
+							},
+							"ParentBatchId": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.ParentBatchId",
+									"type": "Expression"
+								}
+							},
+							"ProjectName": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.ETLProjectName",
+									"type": "Expression"
+								}
+							},
+							"StateId": {
+								"type": "Byte",
+								"value": "1"
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_DW",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableNameWithSchema": "dbo.Employee"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set ReturnValue",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get BatchId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "BatchId",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('Get BatchId').output.firstRow.BatchId"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			}
+		],
+		"parameters": {
+			"ETLProjectName": {
+				"type": "string",
+				"defaultValue": "demo"
+			},
+			"Caller": {
+				"type": "string"
+			},
+			"ParentBatchId": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"BatchInsertProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_Batch_Insert"
+			}
+		},
+		"folder": {
+			"name": "1-Utils Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-01T04:02:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

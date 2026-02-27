@@ -1,0 +1,35 @@
+{
+	"name": "mssql_demo_wxh",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"dbName": {
+				"type": "string",
+				"defaultValue": "FIN_DW"
+			},
+			"User": {
+				"type": "string",
+				"defaultValue": "sa"
+			},
+			"Pwd": {
+				"type": "string",
+				"defaultValue": "123456"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "LAPTOP-UP7K7GI9\\QIQI",
+			"database": "@{linkedService().dbName}",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().User}",
+			"password": "@{linkedService().Pwd}"
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime5",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"name": "Rest_to_asql_yz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_rest",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

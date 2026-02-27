@@ -1,0 +1,56 @@
+{
+	"name": "adfdemo_dataset_sales_lrs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage_sales_lrs",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"sheetName": {
+				"type": "string",
+				"defaultValue": "sheet1"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "sales-2023.xlsx"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "Sales_lrs"
+			}
+		},
+		"folder": {
+			"name": "dataset_lrs"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheetName",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

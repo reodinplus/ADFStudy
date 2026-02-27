@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntime-lrs",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"name": "AdfDemo_asql_L",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"Server": {
+				"type": "String",
+				"defaultValue": "azuresqlstxserver.database.windows.net"
+			},
+			"DBname": {
+				"type": "String",
+				"defaultValue": "adfstudy"
+			},
+			"username": {
+				"type": "String",
+				"defaultValue": "cdstx"
+			},
+			"PWD": {
+				"type": "String",
+				"defaultValue": "1qaz!QAZ"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=@{linkedService().Server};Initial Catalog=@{linkedService().DBname};User ID=@{linkedService().username};Password=@{linkedService().PWD}"
+		}
+	}
+}

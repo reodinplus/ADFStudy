@@ -1,0 +1,25 @@
+{
+	"name": "adfdemo_storage_dataset_excel_zjh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage_zjh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_zjh"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "EmployeeDemo_zjh.xlsx",
+				"container": "adfdemo"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

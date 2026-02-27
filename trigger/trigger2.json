@@ -1,0 +1,39 @@
+{
+	"name": "trigger2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "ADF_execl to_asql",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-10-11T09:06:00",
+				"endTime": "2024-10-12T09:06:00",
+				"timeZone": "China Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						8,
+						15
+					],
+					"weekDays": [
+						"Monday",
+						"Tuesday",
+						"Wednesday"
+					]
+				}
+			}
+		}
+	}
+}

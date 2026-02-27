@@ -1,0 +1,26 @@
+{
+	"name": "DS_blob_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "datademo02.DAT",
+				"folderPath": "ecip",
+				"container": "adfdemo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\"",
+			"firstRowAsHeader": false,
+			"nullValue": "\"\"",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

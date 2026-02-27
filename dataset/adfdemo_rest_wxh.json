@@ -1,0 +1,16 @@
+{
+	"name": "adfdemo_rest_wxh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "restdemo_wxh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_wxh"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

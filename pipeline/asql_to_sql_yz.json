@@ -1,0 +1,115 @@
+{
+	"name": "asql_to_sql_yz",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "productName",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "productName",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "salesAmount",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "salesAmount",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "updateDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "updateDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "sql_to_asql_1",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "stg_Sales_yz"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Sql_to_asql_yz",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Sales1"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "pipeline_yz"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-12-12T07:27:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

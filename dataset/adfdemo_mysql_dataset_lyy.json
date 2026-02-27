@@ -1,0 +1,35 @@
+{
+	"name": "adfdemo_mysql_dataset_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_mysql_lyy",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Demo_test"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

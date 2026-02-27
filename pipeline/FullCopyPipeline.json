@@ -1,0 +1,85 @@
+{
+	"name": "FullCopyPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "FullCopyActivity",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_dbw",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": {
+								"value": "@variables('SourceSchemaName')",
+								"type": "Expression"
+							},
+							"TableName": {
+								"value": "@variables('SourceTableName')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SinkDataset_dbw",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"SourceSchemaName": {
+				"type": "String",
+				"defaultValue": "dbo"
+			},
+			"SourceTableName": {
+				"type": "String",
+				"defaultValue": "data_source_table1"
+			}
+		},
+		"folder": {
+			"name": "pipeline_dbw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-29T03:04:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

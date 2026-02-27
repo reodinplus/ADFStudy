@@ -1,0 +1,52 @@
+{
+	"name": "adfdemo_to_asql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_to_asql",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"servername": "azuresqlstxserver.database.windows.net",
+				"dbname": "adfstudy",
+				"username": "cdstx",
+				"pwd": "1qaz!QAZ"
+			}
+		},
+		"parameters": {
+			"Schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "employee1"
+			}
+		},
+		"folder": {
+			"name": "dataset_tx"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "name",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().Schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

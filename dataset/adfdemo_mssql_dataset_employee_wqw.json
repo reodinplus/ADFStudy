@@ -1,0 +1,34 @@
+{
+	"name": "adfdemo_mssql_dataset_employee_wqw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_mssql_wqw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_wqw"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

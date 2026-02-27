@@ -1,0 +1,16 @@
+{
+	"name": "adfdemo_dataset_rest_ds_two",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_rest_two",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

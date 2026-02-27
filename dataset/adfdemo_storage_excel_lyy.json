@@ -1,0 +1,31 @@
+{
+	"name": "adfdemo_storage_excel_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_excel_to_asql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "demo.xlsx",
+				"container": "adfdemo"
+			}
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

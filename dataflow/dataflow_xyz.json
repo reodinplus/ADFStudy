@@ -1,0 +1,327 @@
+{
+	"name": "dataflow_xyz",
+	"properties": {
+		"folder": {
+			"name": "dataflow_xyz"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source2"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source3"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source4"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_jbl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source5"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_jbl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source6"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_jbl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source7"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_jbl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source8"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_jbl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source9"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_lh",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"linkedService": {
+						"referenceName": "sqldb_dw_jbl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink4"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "splitByTypeDesc"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          name as string,",
+				"          object_id as integer,",
+				"          principal_id as integer,",
+				"          schema_id as integer,",
+				"          parent_object_id as integer,",
+				"          type as string,",
+				"          type_desc as string,",
+				"          create_date as timestamp,",
+				"          modify_date as timestamp,",
+				"          is_ms_shipped as boolean,",
+				"          is_published as boolean,",
+				"          is_schema_published as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_object',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
+				"source(output(",
+				"          name as string,",
+				"          object_id as integer,",
+				"          principal_id as integer,",
+				"          schema_id as integer,",
+				"          parent_object_id as integer,",
+				"          type as string,",
+				"          type_desc as string,",
+				"          create_date as timestamp,",
+				"          modify_date as timestamp,",
+				"          is_ms_shipped as boolean,",
+				"          is_published as boolean,",
+				"          is_schema_published as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_object',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source2",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_adfdemo_object',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source3",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'query',",
+				"     store: 'sqlserver',",
+				"     query: 'select * from sys.system_objects',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source4",
+				"source(output(",
+				"          filename as string,",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modifty_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'employee1',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source5",
+				"source(output(",
+				"          PersonID as integer,",
+				"          Name as string,",
+				"          LastModifytime as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'data_destination_table_jbl',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source6",
+				"source(output(",
+				"          PersonID as integer,",
+				"          Name as string,",
+				"          LastModifytime as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'data_destination_destination_jbl',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source7",
+				"source(output(",
+				"          PersonID as integer,",
+				"          Name as string,",
+				"          LastModifytime as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'data_destination_destination_jbl',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source8",
+				"source(output(",
+				"          PersonID as integer,",
+				"          Name as string,",
+				"          LastModifytime as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'data_destination_table_wk',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source9",
+				"source1 filter(type_desc=='USER_TABLE') ~> filter1",
+				"source2 split(type_desc == 'USER_TABLE',",
+				"     type_desc == 'SQL_STORED_PROCEDURE',",
+				"     disjoint: false) ~> splitByTypeDesc@(typeIsTableView, typeIsProgramingObject, typeOther)",
+				"source3, source4 union(byName: true)~> union1",
+				"source5 select(mapColumn(",
+				"          filename,",
+				"          id,",
+				"          name,",
+				"          last_modifty_time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"source6 derive(column1 = 'a column value',",
+				"          each(match(type=='string'), $$ = $$+'yf'),",
+				"          each(match(type=='string'), $$+'yf' = $$+'xyz'),",
+				"          column2 = 'xyz') ~> derivedColumn1",
+				"source7, source8 lookup(source7@PersonID == source8@PersonID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"source9 aggregate(each(match(type=='string'), 'count' = count(Name))) ~> aggregate1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_adfdemo_object',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"splitByTypeDesc@typeIsTableView sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_adfdemo_object',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'src_object',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     input(",
+				"          filename as string,",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modifty_time as timestamp",
+				"     ),",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'dbo',",
+				"     tableName: 'employee1',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink4"
+			]
+		}
+	}
+}

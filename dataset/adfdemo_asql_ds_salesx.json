@@ -1,0 +1,42 @@
+{
+	"name": "adfdemo_asql_ds_salesx",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"server": "azuresqlstxserver.database.windows.net",
+				"DBName": "adfstudy",
+				"username": "cdstx",
+				"pwd": "1qaz!QAZ"
+			}
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "adfdemo_salesx"
+			}
+		},
+		"folder": {
+			"name": "dataset_xwx"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

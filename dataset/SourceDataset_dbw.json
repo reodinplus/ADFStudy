@@ -1,0 +1,42 @@
+{
+	"name": "SourceDataset_dbw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLinkedService_dbw",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "adfstudy",
+				"UserName": "cdstx",
+				"Password": "1qaz!QAZ",
+				"FQDN": "azuresqlstxserver.database.windows.net"
+			}
+		},
+		"parameters": {
+			"TableName": {
+				"type": "string",
+				"defaultValue": " "
+			},
+			"SchemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().SchemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

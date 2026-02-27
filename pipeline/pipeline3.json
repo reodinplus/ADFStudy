@@ -1,0 +1,33 @@
+{
+	"name": "pipeline3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"Authorization": "APPCODE 5286415b30a84eddb01d1e45ece1963c"
+					},
+					"url": "https://ali-weather.showapi.com/area-to-weather?area=玄武&needMoreDay=0&needIndex=1&needHourData=0&need3HourForcast=0&needAlarm=0"
+				}
+			}
+		],
+		"folder": {
+			"name": "pipeline_jbl"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-29T03:51:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,65 @@
+{
+	"name": "asql_lookup_yz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adedemo_dataset_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tableNmae": {
+				"type": "string",
+				"defaultValue": "dbo.adfdemo_stg_sales_yz"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "file_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "file_last_modifty_time",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "product_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "qty",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "unit_price",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "subtotal",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().tableNmae,'.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().tableNmae,'.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,50 @@
+{
+	"name": "adfdemo_asql_adfdemo_rest_one_wxh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "restdemo_ds_wxh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_wxh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "origin",
+				"type": "nvarchar"
+			},
+			{
+				"name": "content",
+				"type": "nvarchar"
+			},
+			{
+				"name": "created_at",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updated_at",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfdemo_rest_one_wxh"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

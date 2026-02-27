@@ -1,0 +1,59 @@
+{
+	"name": "adf_mssql_fzx",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_localsql_fzx",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"hostname": {
+					"value": "@dataset().HostName",
+					"type": "Expression"
+				},
+				"dbname": {
+					"value": "@dataset().dbName",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"SchemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"TableName": {
+				"type": "string",
+				"defaultValue": "Test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"dbName": {
+				"type": "string",
+				"defaultValue": "test"
+			}
+		},
+		"folder": {
+			"name": "dataset_fzx"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "name",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().SchemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

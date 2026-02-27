@@ -1,0 +1,21 @@
+{
+	"name": "target",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "targetBlob",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "newsales"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

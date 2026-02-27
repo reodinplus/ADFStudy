@@ -1,0 +1,16 @@
+{
+	"name": "Sql_to_adf_yz",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=LAPTOP-KR8NIJ2E;initial catalog=ssis;user id=sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4ZTYzMTYyZC1iMDczLTQ3N2YtODIzYi02ZTM5YmYxZTM4YjkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime7",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

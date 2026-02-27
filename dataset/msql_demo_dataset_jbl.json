@@ -1,0 +1,65 @@
+{
+	"name": "msql_demo_dataset_jbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_mssql_jbl",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": {
+					"value": "@dataset().dbName",
+					"type": "Expression"
+				},
+				"user": "sa",
+				"password": "123456",
+				"server": "10.0.0.179"
+			}
+		},
+		"parameters": {
+			"schemaname": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"tableName": {
+				"type": "string",
+				"defaultValue": "Score"
+			},
+			"dbName": {
+				"type": "string",
+				"defaultValue": "SQL"
+			}
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "StudentId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ClassId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Score",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schemaname",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

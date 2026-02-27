@@ -1,0 +1,50 @@
+{
+	"name": "adfstudy_asql_dataset_one",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_asql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_study"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "origin",
+				"type": "nvarchar"
+			},
+			{
+				"name": "content",
+				"type": "nvarchar"
+			},
+			{
+				"name": "created_at",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updated_at",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfstudy_rest_one"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,35 @@
+{
+	"name": "sqldb_dw_wxh",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"server": {
+				"type": "string",
+				"defaultValue": "azuresqlstxserver.database.windows.net"
+			},
+			"dbName": {
+				"type": "string",
+				"defaultValue": "adfstudy"
+			},
+			"uerName": {
+				"type": "string",
+				"defaultValue": "cdstx"
+			},
+			"pwd": {
+				"type": "string",
+				"defaultValue": "1qaz!QAZ"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "@{linkedService().server}",
+			"database": "@{linkedService().dbName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().uerName}",
+			"password": "@{linkedService().pwd}"
+		}
+	}
+}

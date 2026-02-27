@@ -1,0 +1,70 @@
+{
+	"name": "YD_TEST_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "YD_Text_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Dataset_L"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "HSName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "KMName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "KSName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "HYName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FX_1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "QCYE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BQJF",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BQDF",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "JFLJ",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "DFLJ",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "FX_2",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "YD_Test"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

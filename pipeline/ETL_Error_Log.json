@@ -1,0 +1,127 @@
+{
+	"name": "ETL_Error_Log",
+	"properties": {
+		"activities": [
+			{
+				"name": "Log Process  Error",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": {
+						"value": "@variables('ErrorInsertProcName')",
+						"type": "Expression"
+					},
+					"storedProcedureParameters": {
+						"ActivityName": {
+							"value": {
+								"value": "@pipeline().parameters.ActivityName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"BatchId": {
+							"value": {
+								"value": "@pipeline().parameters.BatchId",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"ErrorCode": {
+							"value": {
+								"value": "@pipeline().parameters.ErrorCode",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"ErrorMsg": {
+							"value": {
+								"value": "@pipeline().parameters.ErrorMsg",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorType": {
+							"value": {
+								"value": "@pipeline().parameters.ErrorType",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().parameters.PipelineName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ProcessId": {
+							"value": {
+								"value": "@pipeline().parameters.ProcessId",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"TableName": {
+							"value": {
+								"value": "@pipeline().parameters.TableName",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_DW",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"ActivityName": {
+				"type": "string"
+			},
+			"BatchId": {
+				"type": "int"
+			},
+			"ErrorCode": {
+				"type": "int"
+			},
+			"ErrorMsg": {
+				"type": "string"
+			},
+			"ErrorType": {
+				"type": "string"
+			},
+			"PipelineName": {
+				"type": "string",
+				"defaultValue": " "
+			},
+			"ProcessId": {
+				"type": "int"
+			},
+			"TableName": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ErrorInsertProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_Error_Insert"
+			}
+		},
+		"folder": {
+			"name": "1-Utils Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-31T03:29:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

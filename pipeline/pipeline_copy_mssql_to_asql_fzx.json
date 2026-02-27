@@ -1,0 +1,246 @@
+{
+	"name": "pipeline_copy_mssql_to_asql_fzx",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "订单ID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "订单ID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "订单日期",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "订单日期",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "发货日期",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "发货日期",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "邮寄方式",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "邮寄方式",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "客户ID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "客户ID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "城市",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "城市",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "产品ID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "产品ID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "销售额",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "销售额",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 10
+								}
+							},
+							{
+								"source": {
+									"name": "数量",
+									"type": "Byte",
+									"physicalType": "tinyint"
+								},
+								"sink": {
+									"name": "数量",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "折扣",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "折扣",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 10
+								}
+							},
+							{
+								"source": {
+									"name": "利润",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "利润",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 10
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adf_mssql_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": "dbo",
+							"TableName": "OrderT",
+							"HostName": "SHOKA",
+							"dbName": "test"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adf_asql_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": {
+								"value": "@pipeline().parameters.SchemeName",
+								"type": "Expression"
+							},
+							"TableName": "Order_fzx"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"DBName": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"SchemeName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "ssisfile"
+			},
+			"FileType": {
+				"type": "string",
+				"defaultValue": "xlsx"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "*"
+			},
+			"Category": {
+				"type": "string",
+				"defaultValue": "订单数据"
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-06T10:34:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

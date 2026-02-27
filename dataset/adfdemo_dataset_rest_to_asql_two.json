@@ -1,0 +1,48 @@
+{
+	"name": "adfdemo_dataset_rest_to_asql_two",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst2",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "sqldevswcd"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "difficulty",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question",
+				"type": "nvarchar"
+			},
+			{
+				"name": "correct_answer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "incorrect_answers",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfdemo_rest_two"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

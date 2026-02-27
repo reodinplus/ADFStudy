@@ -1,0 +1,371 @@
+{
+	"name": "Copy_Multiple_USP_Utils",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get SRC Proc Meta Data",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Get Business System ProcessId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": {
+							"value": "@variables('ProcGetProcName')",
+							"type": "Expression"
+						},
+						"storedProcedureParameters": {
+							"ProcType": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.ProcType",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_DW",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableNameWithSchema": "."
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Loop Exec Proc Meta Data",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get SRC Proc Meta Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get SRC Proc Meta Data').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Exec Store Procedure",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Get ProcessId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@item().ProcName",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"BatchId": {
+										"value": {
+											"value": "@pipeline().parameters.BatchId",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_SQL_DW",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Get ProcessId",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Process_Get",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"BatchId": {
+										"value": "@pipeline().parameters.BatchId",
+										"type": "Expression"
+									},
+									"PipelineName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"TableName": {
+										"value": "@item().ProcName",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set Process Success",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Exec Store Procedure",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Process_State_Set",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ProcessId": {
+										"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+										"type": "Expression"
+									},
+									"StateId": 2
+								}
+							}
+						},
+						{
+							"name": "Set Process Failed",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Exec Store Procedure",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Process_State_Set",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ProcessId": {
+										"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+										"type": "Expression"
+									},
+									"StateId": 3
+								}
+							}
+						},
+						{
+							"name": "Log Process SP Error",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Exec Store Procedure",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Error_Log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ActivityName": {
+										"value": "@concat(\n    activity('Exec Store Procedure').activityRunId,\n    ':', \n    item().ProcName\n)",
+										"type": "Expression"
+									},
+									"BatchId": {
+										"value": "@pipeline().parameters.BatchId",
+										"type": "Expression"
+									},
+									"ErrorCode": {
+										"value": "@activity('Exec Store Procedure').error.errorCode",
+										"type": "Expression"
+									},
+									"ErrorMsg": {
+										"value": "@activity('Exec Store Procedure').error.message",
+										"type": "Expression"
+									},
+									"ErrorType": {
+										"value": "@activity('Exec Store Procedure').error.failureType",
+										"type": "Expression"
+									},
+									"PipelineName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"ProcessId": {
+										"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+										"type": "Expression"
+									},
+									"TableName": {
+										"value": "@replace(toLower(item().ProcName), 'usp_', '')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set Business System  Process Failed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Loop Exec Proc Meta Data",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ProcessId": {
+							"value": "@activity('Get Business System ProcessId').output.pipelineReturnValue.ProcessId",
+							"type": "Expression"
+						},
+						"StateId": 3
+					}
+				}
+			},
+			{
+				"name": "Set Business System Process Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Loop Exec Proc Meta Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ProcessId": {
+							"value": "@activity('Get Business System ProcessId').output.firstRow.ProcessId",
+							"type": "Expression"
+						},
+						"StateId": 2
+					}
+				}
+			},
+			{
+				"name": "Get Business System ProcessId",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_Get",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"BatchId": {
+							"value": "@pipeline().parameters.BatchId",
+							"type": "Expression"
+						},
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"BatchId": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"ProcType": {
+				"type": "string",
+				"defaultValue": " "
+			}
+		},
+		"variables": {
+			"ProcGetProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_ProcLoad_Configuration_Get"
+			}
+		},
+		"folder": {
+			"name": "1-Utils Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-01T16:12:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "adfdemo_asql_dst_xyz1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "azuresqlstxserver.database.windows.net",
+			"database": "sqldevswcd",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "cdstx",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDMyREU3M0Y5LUMzQUMtNDJFNy04QjRCLUM5OTU2NTVEODVBQV83ZGEyNzczMy1lYzQ5LTQ2MTctOGMzNC02YWM3MGM1ODgwODkiDQp9"
+		}
+	}
+}

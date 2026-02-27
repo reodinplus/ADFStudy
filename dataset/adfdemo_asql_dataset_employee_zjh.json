@@ -1,0 +1,40 @@
+{
+	"name": "adfdemo_asql_dataset_employee_zjh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"server": "azuresqlstxserver.database.windows.net",
+				"DBName": "adfstudy",
+				"username": "cdstx",
+				"pwd": "1qaz!QAZ"
+			}
+		},
+		"folder": {
+			"name": "database_zjh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,294 @@
+{
+	"name": "folder_to_asql_reusable",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adfdemo_blob_ds_saless",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": {
+								"value": "@concat('xsalex/',pipeline().parameters.directory)",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@pipeline().parameters.item.name",
+								"type": "Expression"
+							},
+							"sheet": " "
+						}
+					},
+					"fieldList": [
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals('a','a')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "isSuccess",
+								"value": true
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{'adfdemo'}/@{concat('xsalex/',pipeline().parameters.directory)}/@{activity('Get Metadata1').output.itemName}"
+								},
+								{
+									"name": "Destination",
+									"value": "@{'dbo'}.@{pipeline().parameters.tablename}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfdemo_blob_ds_saless",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": {
+											"value": "@concat('xsalex/',pipeline().parameters.directory)",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@activity('Get Metadata1').output.itemName",
+											"type": "Expression"
+										},
+										"sheet": "sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adfdemo_asql_ds_salesx",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": {
+											"value": "@pipeline().parameters.tablename",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "isSuccess",
+								"value": false
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy data2",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{'adfdemo'}/@{concat('xsalex/',pipeline().parameters.directory)}/@{pipeline().parameters.item.name}"
+					},
+					{
+						"name": "Destination",
+						"value": "@{'adfdemo'}/@{if(variables('isSuccess'),concat(concat('xsalex/',pipeline().parameters.directory),'/success'),concat(concat('xsalex/',pipeline().parameters.directory),'/fail'))}/@{concat(utcnow(),pipeline().parameters.item.name)}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"deleteFilesAfterCompletion": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "adfdemo_blob_saless_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": {
+								"value": "@concat('xsalex/',pipeline().parameters.directory)",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@pipeline().parameters.item.name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adfdemo_blob_sales_backup",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"directory": {
+								"value": "@if(variables('isSuccess'),concat(concat('xsalex/',pipeline().parameters.directory),'/success'),concat(concat('xsalex/',pipeline().parameters.directory),'/fail'))",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@concat(utcnow(),pipeline().parameters.item.name)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"item": {
+				"type": "object"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "productdata"
+			},
+			"tablename": {
+				"type": "string",
+				"defaultValue": "xproductdata"
+			}
+		},
+		"variables": {
+			"isSuccess": {
+				"type": "Boolean",
+				"defaultValue": true
+			}
+		},
+		"folder": {
+			"name": "pipeline_xwx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-29T02:57:55Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

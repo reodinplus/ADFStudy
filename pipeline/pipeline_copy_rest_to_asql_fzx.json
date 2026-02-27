@@ -1,0 +1,165 @@
+{
+	"name": "pipeline_copy_rest_to_asql_fzx",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['data']['id']"
+								},
+								"sink": {
+									"name": "id",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['tag']"
+								},
+								"sink": {
+									"name": "tag",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['name']"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['origin']"
+								},
+								"sink": {
+									"name": "origin",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['content']"
+								},
+								"sink": {
+									"name": "content",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['created_at']"
+								},
+								"sink": {
+									"name": "created_at",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['updated_at']"
+								},
+								"sink": {
+									"name": "updated_at",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adf_rest_fzx",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adf_asql_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": {
+								"value": "@pipeline().parameters.SchemeName",
+								"type": "Expression"
+							},
+							"TableName": "adfdemo_rest_one_fzx"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"DBName": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"SchemeName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "ssisfile"
+			},
+			"FileType": {
+				"type": "string",
+				"defaultValue": "xlsx"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "*"
+			},
+			"Category": {
+				"type": "string",
+				"defaultValue": "订单数据"
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-06T10:34:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

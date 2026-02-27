@@ -1,0 +1,36 @@
+{
+	"name": "Variables_zjh",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "name",
+					"value": {
+						"value": "@concat('Baba', '''s',  ' book store')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"name": {
+				"type": "String",
+				"defaultValue": "12345"
+			}
+		},
+		"folder": {
+			"name": "pipeline_zjh"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-12-02T03:58:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

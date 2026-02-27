@@ -1,0 +1,7 @@
+{
+	"name": "integrationRuntime6",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "dbw,ADFStudy"
+	}
+}

@@ -1,0 +1,51 @@
+{
+	"name": "adfdemo_asql_ds_rest_twox",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"server": "azuresqlstxserver.database.windows.net",
+				"DBName": "adfstudy",
+				"username": "cdstx",
+				"pwd": "1qaz!QAZ"
+			}
+		},
+		"folder": {
+			"name": "dataset_xwx"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "difficulty",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question",
+				"type": "nvarchar"
+			},
+			{
+				"name": "correct_answer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "incorrect_answers",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfdemo_rest_twox"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

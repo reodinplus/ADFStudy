@@ -1,0 +1,237 @@
+{
+	"name": "ODS_Weather_WeatherByHours",
+	"properties": {
+		"activities": [
+			{
+				"name": "p_ETL_TruncateTable",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[p_ETL_Truncate_STG_WeatherByHours]"
+				},
+				"linkedServiceName": {
+					"referenceName": "WeatherByCurrent_AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Web_WeatherAPI_WeatherByCurrent",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "p_ETL_TruncateTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"Authorization": "APPCODE 5286415b30a84eddb01d1e45ece1963c"
+					},
+					"url": {
+						"value": "@pipeline().parameters.V_URL",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "STG_WeatherAPI_WeatherByCurrent",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Web_WeatherAPI_WeatherByCurrent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "dbo.Test"
+					},
+					{
+						"name": "Destination",
+						"value": "@{'dbo'}.@{'STG_WeatherAPI_WeatherByCurrent'}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "DECLARE @JsonStr NVARCHAR(MAX)= N'@{string(activity('Web_WeatherAPI_WeatherByCurrent').output)}'\nselect\n       CONVERT(DATETIME, STUFF(STUFF(T1.WeatherDate, 9, 0, ' '), 12, 0, ':'), 120) AS WeatherDate,\n       Weather,\n       CONVERT(nvarchar(250), NULL) AS outdoorPM25 ,\n       CONVERT(nvarchar(250), NULL) AS outdoorHumidity,\n       T1.Temperature + N' °C' AS Temperature,\n       dateadd(hour ,8,getdate()) as DWInsertDate,\n       dateadd(hour ,8,getdate()) as  DWUpdateDate,\n       N'南京' AS area\nfrom OPENJSON(@JsonStr,'$.showapi_res_body.hourList')\nwith (\n    WeatherDate nvarchar(250) '$.time',\n    Weather nvarchar(250) '$.weather',\n    Temperature nvarchar(250) '$.temperature'\n)  as T1",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "WeatherDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "WeatherDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "Weather",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Weather",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "outdoorPM25",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "outdoorPM25",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "outdoorHumidity",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "outdoorHumidity",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Temperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Temperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "DWInsertDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "DWInsertDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "DWUpdateDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "DWUpdateDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "area",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "area",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adf_demo_asql_dataset_Test",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "WeatherByCurrent_AzureSqlTable",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "STG_WeatherAPI_WeatherByHours"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"V_URL": {
+				"type": "string",
+				"defaultValue": "https://ali-weather.showapi.com/hour24?area=玄武"
+			}
+		},
+		"folder": {
+			"name": "pipeline_jbl"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-30T06:38:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

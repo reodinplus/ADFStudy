@@ -1,0 +1,58 @@
+{
+	"name": "adfdemo_asql_dataset_wqw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dataset",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "adfstudy",
+				"dbServerName": "azuresqlstxserver.database.windows.net",
+				"dbUserName": "cdstx",
+				"dbUserPwd": "1qaz!QAZ"
+			}
+		},
+		"parameters": {
+			"tableName": {
+				"type": "string",
+				"defaultValue": "data_destination_table_wqw"
+			},
+			"schemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			}
+		},
+		"folder": {
+			"name": "database_wqw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PersonID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "LastModifytime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

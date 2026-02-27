@@ -1,0 +1,600 @@
+{
+	"name": "Copy_Multiple_Tables_Template",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get SRC Table Meta Data",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Get Business System ProcessId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": {
+							"value": "@variables('DataLoadConfigurationGetProcName')",
+							"type": "Expression"
+						},
+						"storedProcedureParameters": {
+							"BusinessSystem": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.BusinessSystem",
+									"type": "Expression"
+								}
+							},
+							"ODSName": {
+								"type": "String",
+								"value": null
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_DW",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableNameWithSchema": "."
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Loop SRC Table Meta Data",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get SRC Table Meta Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get SRC Table Meta Data').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Extract SRC Load ODS",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get ProcessId",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(1, 1)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy SRC To STG",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "SP Clear STG",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "@item().SRCSQL",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_SQL_DW",
+												"type": "DatasetReference",
+												"parameters": {
+													"TableNameWithSchema": {
+														"value": "@item().SRCName",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_SQL_DW",
+												"type": "DatasetReference",
+												"parameters": {
+													"TableNameWithSchema": {
+														"value": "@item().STGName",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "SP Load ODS",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Copy SRC To STG",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": {
+												"value": "@item().ODSProcName",
+												"type": "Expression"
+											},
+											"storedProcedureParameters": {
+												"BatchId": {
+													"value": {
+														"value": "@pipeline().parameters.BatchId",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_SQL_DW",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "SP Clear STG",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": {
+												"value": "@variables('ClearTableProcName')",
+												"type": "Expression"
+											},
+											"storedProcedureParameters": {
+												"TableNameWithSchema": {
+													"value": {
+														"value": "@item().STGName",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_SQL_DW",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Log Process Copy Data Error",
+										"type": "ExecutePipeline",
+										"dependsOn": [
+											{
+												"activity": "Copy SRC To STG",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ETL_Error_Log",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"ActivityName": {
+													"value": "@concat(\n    activity('Copy SRC To STG').activityRunId,\n    ':', \n    item().STGName\n)",
+													"type": "Expression"
+												},
+												"BatchId": {
+													"value": "@pipeline().parameters.BatchId",
+													"type": "Expression"
+												},
+												"ErrorCode": {
+													"value": "@activity('Copy SRC To STG').error.errorCode",
+													"type": "Expression"
+												},
+												"ErrorMsg": {
+													"value": "@activity('Copy SRC To STG').error.message",
+													"type": "Expression"
+												},
+												"ErrorType": {
+													"value": "@activity('Copy SRC To STG').error.failureType",
+													"type": "Expression"
+												},
+												"PipelineName": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"ProcessId": {
+													"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+													"type": "Expression"
+												},
+												"TableName": {
+													"value": "@item().STGName",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "Log Process SP Error",
+										"type": "ExecutePipeline",
+										"dependsOn": [
+											{
+												"activity": "SP Load ODS",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ETL_Error_Log",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"ActivityName": {
+													"value": "@concat(\n    activity('SP Load ODS').activityRunId,\n    ':', \n   item().ODSProcName\n)",
+													"type": "Expression"
+												},
+												"BatchId": {
+													"value": "@pipeline().parameters.BatchId",
+													"type": "Expression"
+												},
+												"ErrorCode": {
+													"value": "@activity('SP Load ODS').error.errorCode",
+													"type": "Expression"
+												},
+												"ErrorMsg": {
+													"value": "@activity('SP Load ODS').error.message",
+													"type": "Expression"
+												},
+												"ErrorType": {
+													"value": "@activity('SP Load ODS').error.failureType",
+													"type": "Expression"
+												},
+												"PipelineName": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"ProcessId": {
+													"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+													"type": "Expression"
+												},
+												"TableName": {
+													"value": "@item().ODSName",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Set Data Load Configuration CurrPointLoad",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Set Process Success",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@variables('DataLoadConfigurationUpdateProcName')",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"ODSName": {
+										"value": {
+											"value": "@item().ODSName",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_SQL_DW",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Get ProcessId",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Process_Get",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"BatchId": {
+										"value": "@pipeline().parameters.BatchId",
+										"type": "Expression"
+									},
+									"PipelineName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"TableName": {
+										"value": "@item().ODSName",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set Process Success",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Extract SRC Load ODS",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Process_State_Set",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ProcessId": {
+										"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+										"type": "Expression"
+									},
+									"StateId": 2
+								}
+							}
+						},
+						{
+							"name": "Set Process Failed",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Extract SRC Load ODS",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "ETL_Process_State_Set",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ProcessId": {
+										"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+										"type": "Expression"
+									},
+									"StateId": 3
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Business System ProcessId",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_Get",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"BatchId": {
+							"value": "@pipeline().parameters.BatchId",
+							"type": "Expression"
+						},
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set Business System Process Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Loop SRC Table Meta Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ProcessId": {
+							"value": "@activity('Get Business System ProcessId').output.pipelineReturnValue.ProcessId",
+							"type": "Expression"
+						},
+						"StateId": 2
+					}
+				}
+			},
+			{
+				"name": "Set Business System Process Failed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Loop SRC Table Meta Data",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ProcessId": {
+							"value": "@activity('Get Business System ProcessId').output.pipelineReturnValue.ProcessId",
+							"type": "Expression"
+						},
+						"StateId": 3
+					}
+				}
+			}
+		],
+		"parameters": {
+			"BusinessSystem": {
+				"type": "string",
+				"defaultValue": "demo"
+			},
+			"BatchId": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"ClearTableProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_Clear_Table"
+			},
+			"DataLoadConfigurationGetProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_DataLoad_Configuration_Get"
+			},
+			"DataLoadConfigurationUpdateProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_DataLoad_Configuration_Update"
+			}
+		},
+		"folder": {
+			"name": "0-Template Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-12T02:07:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,29 @@
+{
+	"name": "exec_pipeline_wqw",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ParamDemo",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "pipeline_wqw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-14T02:45:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,340 @@
+{
+	"name": "increment_loop_excel_to_asql_sales2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup maxlastmodified",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT ISNULL(MAX(lastmodified),'1900-01-01') as maxLastModified\nFROM [@{pipeline().parameters.schema}].[@{pipeline().parameters.tablename}];",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_asql_sales_lrs",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": {
+								"value": "@pipeline().parameters.schema",
+								"type": "Expression"
+							},
+							"table": {
+								"value": "@pipeline().parameters.tablename",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "Get Metadata files",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Lookup maxlastmodified",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adfdemo_dataset_sales_lrs",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adfdemo",
+							"sheetName": "sheet1",
+							"file": "*",
+							"directory": "Sales_lrs"
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Filter file of extend name",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata files').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name, '.xlsx')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter file of extend name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter file of extend name').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Metadata of file",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adfdemo_dataset_sales_lrs",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"sheetName": "sheet1",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"directory": "Sales_lrs"
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata of file",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(activity('Get Metadata of file').output.lastModified,addSeconds(addHours(activity('Lookup maxlastmodified').output.firstRow.maxLastModified,-8),-1) )",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "ExcelSource",
+												"additionalColumns": [
+													{
+														"name": "filename",
+														"value": {
+															"value": "@item().name",
+															"type": "Expression"
+														}
+													},
+													{
+														"name": "lastmodified",
+														"value": {
+															"value": "@addHours(activity('Get Metadata of file').output.lastModified,8)",
+															"type": "Expression"
+														}
+													}
+												],
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "filename",
+															"type": "String"
+														},
+														"sink": {
+															"name": "filename",
+															"type": "String",
+															"physicalType": "varchar"
+														}
+													},
+													{
+														"source": {
+															"name": "product",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "product",
+															"type": "String",
+															"physicalType": "varchar"
+														}
+													},
+													{
+														"source": {
+															"name": "price",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "price",
+															"type": "Double",
+															"physicalType": "float"
+														}
+													},
+													{
+														"source": {
+															"name": "count",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "count",
+															"type": "Int32",
+															"physicalType": "int"
+														}
+													},
+													{
+														"source": {
+															"name": "lastmodified",
+															"type": "String"
+														},
+														"sink": {
+															"name": "lastmodified",
+															"type": "DateTime",
+															"physicalType": "datetime"
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "adfdemo_dataset_sales_lrs",
+												"type": "DatasetReference",
+												"parameters": {
+													"container": "adfdemo",
+													"sheetName": "sheet1",
+													"file": {
+														"value": "@item().name",
+														"type": "Expression"
+													},
+													"directory": "Sales_lrs"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "adfdemo_asql_sales_lrs",
+												"type": "DatasetReference",
+												"parameters": {
+													"schema": "dbo",
+													"table": "sales_lrs"
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"tablename": {
+				"type": "string",
+				"defaultValue": "sales_lrs"
+			},
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			}
+		},
+		"folder": {
+			"name": "pipeline_lrs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-15T06:18:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

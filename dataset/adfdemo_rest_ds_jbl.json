@@ -1,0 +1,16 @@
+{
+	"name": "adfdemo_rest_ds_jbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_rest_jbl",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,36 @@
+{
+	"name": "adfdemo_asql_ds_501lh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst_lh",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "adfdemo_stg_sale_lh"
+			}
+		},
+		"folder": {
+			"name": "database_lh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

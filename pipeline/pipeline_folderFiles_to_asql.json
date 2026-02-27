@@ -1,0 +1,152 @@
+{
+	"name": "pipeline_folderFiles_to_asql",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select 'adfdemo' as Container,N'ssisfile/产品数据' as Directory,N'产品数据.xlsx' as Filename,'dbo.DBW_ProductsData' as TableNameWithSchema\nunion all\nselect 'adfdemo',N'ssisfile/地点数据',N'地点数据.xlsx','dbo.DBW_LocationData'\nunion all\nselect 'adfdemo',N'ssisfile/订单数据',N'2016年订单数据.xlsx','dbo.DBW_OrdersData'\nunion all\nselect 'adfdemo',N'ssisfile/客户数据' ,N'客户数据.xlsx','dbo.DBW_CustomersData'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SourceDataset_dbw",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": " ",
+							"TableName": " "
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"wildcardFolderPath": {
+											"value": "@item().Directory",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.xlsx",
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfdemo_storage_dataset_sales_dbw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": {
+											"value": "@item().Container",
+											"type": "Expression"
+										},
+										"Directory": {
+											"value": "@item().Directory",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@item().FileName",
+											"type": "Expression"
+										},
+										"TableName": "Sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SourceDataset_dbw",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@split(item().TableNameWithSchema,'.')[1]",
+											"type": "Expression"
+										},
+										"SchemaName": {
+											"value": "@split(item().TableNameWithSchema,'.')[0] ",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"val": {
+				"type": "Integer"
+			},
+			"val2": {
+				"type": "Integer"
+			}
+		},
+		"folder": {
+			"name": "pipeline_dbw/test"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-02T07:19:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,140 @@
+{
+	"name": "pipeline_contral_flow",
+	"properties": {
+		"activities": [
+			{
+				"name": "Filter AnimalArray",
+				"type": "Filter",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('AnimalArray')",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item(),'Cat')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Filter intarray",
+				"type": "Filter",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('IntArray')",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@greater(item(),3 )",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Filter nameArray",
+				"type": "Filter",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('NameArray')",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@greater(int(item().value),3 )",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter AnimalArray",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter AnimalArray').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "animal",
+								"value": {
+									"value": "@item()",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"AnimalArray": {
+				"type": "Array",
+				"defaultValue": [
+					"Dog",
+					"Pig",
+					"Cat"
+				]
+			},
+			"IntArray": {
+				"type": "Array",
+				"defaultValue": [
+					1,
+					2,
+					3,
+					4,
+					5
+				]
+			},
+			"NameArray": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"name": "name1",
+						"value": "1"
+					},
+					{
+						"name": "name2",
+						"value": "5"
+					}
+				]
+			},
+			"animal": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "pipeline_lrs"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-13T09:53:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

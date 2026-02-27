@@ -1,0 +1,30 @@
+{
+	"name": "asql_getmetadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "asql_get_metadata",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_tx"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "name",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee1"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

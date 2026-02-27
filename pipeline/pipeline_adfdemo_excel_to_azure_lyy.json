@@ -1,0 +1,179 @@
+{
+	"name": "pipeline_adfdemo_excel_to_azure_lyy",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup files",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_dateset_asql_lyy",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "FileName_lyy"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach files",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup files').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata files name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adfdemo_blob_excel_to_azure_lyy",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": {
+											"value": "@concat('ADFDemo_lyy/', activity('Lookup files').output.value)",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@activity('Get Metadata files name').output.childItems",
+											"type": "Expression"
+										},
+										"sheetname": "Sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adfdemo_dateset_asql_lyy",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": {
+											"value": "@item().DateTableName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Get Metadata files name",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adfdemo_blob_excel_to_azure_lyy",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "adfdemo",
+										"directory": {
+											"value": "@concat('ADFDemo_lyy/', item().filename)",
+											"type": "Expression"
+										},
+										"filename": "*.xlsx",
+										"sheetname": "Sheet1"
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"name": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "pipeline_lyy"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-18T04:29:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

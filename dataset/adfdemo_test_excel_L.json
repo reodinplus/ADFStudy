@@ -1,0 +1,85 @@
+{
+	"name": "adfdemo_test_excel_L",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"blob": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"dicretory": {
+				"type": "string",
+				"defaultValue": "xsalex/customdata/success"
+			},
+			"tablename": {
+				"type": "string",
+				"defaultValue": "客户数据.xlsx"
+			},
+			"Sheet": {
+				"type": "string",
+				"defaultValue": "Sheet1"
+			}
+		},
+		"folder": {
+			"name": "Dataset_L"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().Sheet",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().tablename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dicretory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().blob",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "客户ID",
+				"type": "String"
+			},
+			{
+				"name": "客户名称",
+				"type": "String"
+			},
+			{
+				"name": "性别",
+				"type": "String"
+			},
+			{
+				"name": "年龄",
+				"type": "String"
+			},
+			{
+				"name": "细分",
+				"type": "String"
+			},
+			{
+				"name": "职业",
+				"type": "String"
+			},
+			{
+				"name": "行业",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

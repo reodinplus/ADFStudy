@@ -1,0 +1,35 @@
+{
+	"name": "mysql_demo_lyy",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"dbName": {
+				"type": "string",
+				"defaultValue": "LYY-TEST"
+			},
+			"User_Name": {
+				"type": "string",
+				"defaultValue": "sqladminuser01"
+			},
+			"password": {
+				"type": "string",
+				"defaultValue": "1qaz!QAZ"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "10.0.0.81",
+			"database": "@{linkedService().dbName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().User_Name}",
+			"password": "@{linkedService().password}"
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime-lyy",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

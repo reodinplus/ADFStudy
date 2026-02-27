@@ -1,0 +1,39 @@
+{
+	"name": "DS_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase3",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DbName": {
+					"value": "@dataset().DbName",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"DbName": {
+				"type": "string",
+				"defaultValue": "ADFStudy"
+			},
+			"TableNameWithSchema": {
+				"type": "string",
+				"defaultValue": "dbo.Employee"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().TableNameWithSchema, '.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().TableNameWithSchema, '.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

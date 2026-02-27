@@ -1,0 +1,23 @@
+{
+	"name": "adfdemo_blob_dataset_excel1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst2",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "sqldevswcd"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EmployeeDemo"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

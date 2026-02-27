@@ -1,0 +1,153 @@
+{
+	"name": "hao_wxh",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT\r\n     b.[ObjectName]\r\n    ,FolderName = b.[ObjectValue]\r\n    ,SQLTable   = s.[ObjectValue]\r\n    ,Delimiter  = d.[ObjectValue]\r\nFROM [dbo].[config_wxh] b\r\nJOIN [dbo].[config_wxh] s ON b.[ObjectName] = s.[ObjectName]\r\nJOIN [dbo].[config_wxh] d ON b.[ObjectName] = d.[ObjectName]\r\nWHERE   b.[SourceType] = 'Container'\r\n    AND s.[SourceType] = 'SQLTable'\r\n    AND d.[SourceType] = 'Delimiter';\r\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_asql_dataset_ds_wxh",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": {
+								"value": "@variables('schma')",
+								"type": "Expression"
+							},
+							"table": {
+								"value": "@variables('table')",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "csv_dynamic",
+									"type": "DatasetReference",
+									"parameters": {
+										"path": {
+											"value": "@concat('Sales_jbl/',item().FolderName)",
+											"type": "Expression"
+										},
+										"delimter": {
+											"value": "@item().Delimiter",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adfdemo_asql_dataset_ds_wxh",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": {
+											"value": "@variables('schma')",
+											"type": "Expression"
+										},
+										"table": {
+											"value": "@item().SQLTable",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"schma": {
+				"type": "String",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "String",
+				"defaultValue": "config_wxh"
+			}
+		},
+		"folder": {
+			"name": "pipeline_wxh"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-12-25T07:16:54Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

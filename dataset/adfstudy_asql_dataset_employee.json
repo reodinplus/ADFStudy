@@ -1,0 +1,39 @@
+{
+	"name": "adfstudy_asql_dataset_employee",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_asql",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "adfstudy"
+			}
+		},
+		"parameters": {
+			"schemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"tableName": {
+				"type": "string",
+				"defaultValue": "employee"
+			}
+		},
+		"folder": {
+			"name": "dataset_study"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

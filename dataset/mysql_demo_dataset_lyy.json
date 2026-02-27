@@ -1,0 +1,56 @@
+{
+	"name": "mysql_demo_dataset_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_demo_lyy",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "LYY-TEST",
+				"User_Name": "sqladminuser01",
+				"password": "1qaz!QAZ"
+			}
+		},
+		"parameters": {
+			"schemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"tableName": {
+				"type": "string",
+				"defaultValue": "Demo_test"
+			}
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

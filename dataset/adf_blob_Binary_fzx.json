@@ -1,0 +1,49 @@
+{
+	"name": "adf_blob_Binary_fzx",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_blob_excle_fzx",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"StorageName": "storagestudy"
+			}
+		},
+		"parameters": {
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "contain"
+			},
+			"FolderPath": {
+				"type": "string",
+				"defaultValue": "path"
+			},
+			"Filename": {
+				"type": "string",
+				"defaultValue": "table"
+			}
+		},
+		"folder": {
+			"name": "dataset_fzx"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().Filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().FolderPath",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().ContainName",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

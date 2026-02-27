@@ -1,0 +1,45 @@
+{
+	"name": "adfstudy_asql_dataset_multiple",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_asql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_study"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "difficulty",
+				"type": "nvarchar"
+			},
+			{
+				"name": "question",
+				"type": "nvarchar"
+			},
+			{
+				"name": "correct_answer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "incorrect_answers",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfstudy_rest_multiple"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

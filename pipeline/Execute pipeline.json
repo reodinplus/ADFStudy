@@ -1,0 +1,29 @@
+{
+	"name": "Execute pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "demo",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Pipeline_xyz"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-11-17T01:36:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

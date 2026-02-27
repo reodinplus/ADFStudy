@@ -1,0 +1,194 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"folder": {
+			"name": "dataflow_yz"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "adedemo_dataset_yz",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "adedemo_dataset_yz",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source2"
+				},
+				{
+					"linkedService": {
+						"referenceName": "adedemo_dataset_yz",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source3"
+				},
+				{
+					"linkedService": {
+						"referenceName": "adedemo_dataset_yz",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source4"
+				},
+				{
+					"linkedService": {
+						"referenceName": "adedemo_dataset_yz",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source5"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "adedemo_dataset_yz",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "rank1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     a as string (toString('dbo')),",
+				"     tablename as string (toString('adfdemo_stg_sales_yz'))",
+				"}",
+				"source(output(",
+				"          file_name as string,",
+				"          file_last_modifty_time as timestamp,",
+				"          product_id as integer,",
+				"          qty as integer,",
+				"          unit_price as decimal(19,4),",
+				"          subtotal as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: ($a),",
+				"     tableName: ($tablename),",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source1",
+				"source(output(",
+				"          file_name as string,",
+				"          file_last_modifty_time as timestamp,",
+				"          product_id as integer,",
+				"          qty as integer,",
+				"          unit_price as decimal(19,4),",
+				"          subtotal as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: ($a),",
+				"     tableName: ($tablename),",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source2",
+				"source(output(",
+				"          file_name as string,",
+				"          file_last_modifty_time as timestamp,",
+				"          product_id as integer,",
+				"          qty as integer,",
+				"          unit_price as decimal(19,4),",
+				"          subtotal as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: ($a),",
+				"     tableName: ($tablename),",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source3",
+				"source(output(",
+				"          file_name as string,",
+				"          file_last_modifty_time as timestamp,",
+				"          product_id as integer,",
+				"          qty as integer,",
+				"          unit_price as decimal(19,4),",
+				"          subtotal as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: ($a),",
+				"     tableName: ($tablename),",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source4",
+				"source(output(",
+				"          file_name as string,",
+				"          file_last_modifty_time as timestamp,",
+				"          product_id as integer,",
+				"          qty as integer,",
+				"          unit_price as decimal(19,4),",
+				"          subtotal as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: ($a),",
+				"     tableName: ($tablename),",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source5",
+				"source1 split(qty==10,",
+				"     disjoint: false) ~> split1@(one, two)",
+				"source2, split1@one union(byName: true)~> union1",
+				"union1 derive(qty = qty>10) ~> derivedColumn1",
+				"source3 keyGenerate(output(product_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 aggregate(groupBy(file_name),",
+				"     qty = sum(qty)) ~> aggregate1",
+				"source4 filter(unit_price==12.0000&&subtotal==120.0000) ~> filter1",
+				"source5 rank(asc(qty, true),",
+				"     output(sort as long)) ~> rank1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          file_name as string,",
+				"          file_last_modifty_time as timestamp,",
+				"          product_id as integer,",
+				"          qty as integer,",
+				"          unit_price as decimal(19,4),",
+				"          subtotal as decimal(19,4)",
+				"     ),",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: ($a),",
+				"     tableName: ($tablename),",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

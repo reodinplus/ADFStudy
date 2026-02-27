@@ -1,0 +1,34 @@
+{
+	"name": "adfdemo_mssql_dataset_employee_zjh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_mssql_zjh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_zjh"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EmployeeDemo"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

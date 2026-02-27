@@ -1,0 +1,16 @@
+{
+	"name": "mssql_adfdemo_L",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AmazonRdsForSqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=EGO-AMO-TE;initial catalog=SQLADF;user id=sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2NTg2NDQ1ZC1hNDFhLTRiMWYtYTZiMi1mN2ZmZTE3ZDhkOTMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime1",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

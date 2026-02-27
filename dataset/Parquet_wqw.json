@@ -1,0 +1,83 @@
+{
+	"name": "Parquet_wqw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage_wqw",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "weather.parquet",
+				"folderPath": "Source_wqw",
+				"container": "adfdemo"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "ForecastSiteCode",
+				"type": "INT64"
+			},
+			{
+				"name": "ObservationTime",
+				"type": "INT64"
+			},
+			{
+				"name": "ObservationDate",
+				"type": "TIMESTAMP_MILLIS"
+			},
+			{
+				"name": "WindDirection",
+				"type": "INT64"
+			},
+			{
+				"name": "WindSpeed",
+				"type": "INT64"
+			},
+			{
+				"name": "WindGust",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Visibility",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "ScreenTemperature",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Pressure",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "SignificantWeatherCode",
+				"type": "INT64"
+			},
+			{
+				"name": "SiteName",
+				"type": "UTF8"
+			},
+			{
+				"name": "Latitude",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Longitude",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Region",
+				"type": "UTF8"
+			},
+			{
+				"name": "Country",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

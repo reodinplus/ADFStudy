@@ -1,0 +1,16 @@
+{
+	"name": "adfdemo_rest_ds_lh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_rest_lh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lh"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

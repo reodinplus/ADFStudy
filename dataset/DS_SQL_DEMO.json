@@ -1,0 +1,61 @@
+{
+	"name": "DS_SQL_DEMO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_DEMO",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableNameWithSchema": {
+				"type": "string",
+				"defaultValue": "dbo.employee"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "LogId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BatchId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DataTable",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RowCnt",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "InsertDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UpdateDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().TableNameWithSchema, '.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().TableNameWithSchema, '.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

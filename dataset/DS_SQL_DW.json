@@ -1,0 +1,32 @@
+{
+	"name": "DS_SQL_DW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_DW",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableNameWithSchema": {
+				"type": "string",
+				"defaultValue": "dbo.Employee"
+			}
+		},
+		"folder": {
+			"name": "DW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().TableNameWithSchema, '.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().TableNameWithSchema, '.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

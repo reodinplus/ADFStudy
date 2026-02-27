@@ -1,0 +1,16 @@
+{
+	"name": "adf_rest_fzx",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_rest_fzx",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_fzx"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

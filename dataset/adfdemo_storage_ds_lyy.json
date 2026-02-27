@@ -1,0 +1,56 @@
+{
+	"name": "adfdemo_storage_ds_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_excel_to_asql",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"containr": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"director": {
+				"type": "string",
+				"defaultValue": "Sales_lyy"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "Sales_2021.xlsx"
+			},
+			"sheet": {
+				"type": "string",
+				"defaultValue": "Sheet1"
+			}
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheet",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().director",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().containr",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,59 @@
+{
+	"name": "adf_rest_azure_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lyy_adfdmeo_asql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tag",
+				"type": "varchar"
+			},
+			{
+				"name": "name",
+				"type": "varchar"
+			},
+			{
+				"name": "origin",
+				"type": "varchar"
+			},
+			{
+				"name": "content",
+				"type": "text"
+			},
+			{
+				"name": "created_at",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "updated_at",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "updateTime",
+				"type": "bigint",
+				"precision": 19
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfdemo_rest_one_lyy"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

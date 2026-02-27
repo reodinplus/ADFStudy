@@ -1,0 +1,34 @@
+{
+	"name": "adfstudy_sql_lzw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_sql_lzw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_lzw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirsrName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EmployeeDemo"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

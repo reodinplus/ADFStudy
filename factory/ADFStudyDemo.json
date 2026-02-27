@@ -1,0 +1,9 @@
+{
+	"name": "ADFStudyDemo",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d8b5fed1-b0b2-4e73-b957-f6110891817e",
+		"tenantId": "70de18e1-38e7-4e6e-9927-a6f41d838304"
+	}
+}

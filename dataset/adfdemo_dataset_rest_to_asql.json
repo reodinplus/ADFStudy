@@ -1,0 +1,53 @@
+{
+	"name": "adfdemo_dataset_rest_to_asql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst2",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "sqldevswcd"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "origin",
+				"type": "nvarchar"
+			},
+			{
+				"name": "content",
+				"type": "nvarchar"
+			},
+			{
+				"name": "created_at",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updated_at",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "adfdemo_rest_one"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

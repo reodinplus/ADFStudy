@@ -1,0 +1,35 @@
+{
+	"name": "adfdemo_azure_sql_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lyy_adfdmeo_asql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Demo_lyy"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

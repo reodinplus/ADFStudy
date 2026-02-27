@@ -1,0 +1,111 @@
+{
+	"name": "pipeline_filter",
+	"properties": {
+		"activities": [
+			{
+				"name": "Filter_name",
+				"type": "Filter",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.name",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item(),'dog' )",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Filter_test1",
+				"type": "Filter",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.test1",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@greater(int(item().v),2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.name",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "name",
+								"value": {
+									"value": "@item()",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"name": {
+				"type": "array",
+				"defaultValue": [
+					"大",
+					"dog",
+					"小小",
+					"cat"
+				]
+			},
+			"test1": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"a": "a1",
+						"v": "1"
+					},
+					{
+						"a": "a2",
+						"v": "2"
+					},
+					{
+						"a": "a3",
+						"v": "3"
+					}
+				]
+			}
+		},
+		"variables": {
+			"name": {
+				"type": "String",
+				"defaultValue": "罗"
+			}
+		},
+		"folder": {
+			"name": "pipeline_lzw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-10T10:03:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

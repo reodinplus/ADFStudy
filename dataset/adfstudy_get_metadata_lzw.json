@@ -1,0 +1,20 @@
+{
+	"name": "adfstudy_get_metadata_lzw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfstudy_sql_lzw",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_lzw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

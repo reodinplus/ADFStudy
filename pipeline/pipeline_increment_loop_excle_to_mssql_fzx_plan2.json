@@ -1,0 +1,389 @@
+{
+	"name": "pipeline_increment_loop_excle_to_mssql_fzx_plan2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get_LastModified_Date",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Description",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(file_last_modify_time),'1900-01-01') AS file_last_modify_time\nFROM dbo.adfdemo_stg_sales",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adf_mssql_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": {
+								"value": "@pipeline().parameters.SchemaName",
+								"type": "Expression"
+							},
+							"TableName": {
+								"value": "@pipeline().parameters.TableName",
+								"type": "Expression"
+							},
+							"HostName": {
+								"value": "@pipeline().parameters.HostName",
+								"type": "Expression"
+							},
+							"dbName": {
+								"value": "@pipeline().parameters.dbName",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "Get_Filename",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Get_LastModified_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adf_blob_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"containname": {
+								"value": "@pipeline().parameters.ContainName",
+								"type": "Expression"
+							},
+							"foldername": {
+								"value": "@pipeline().parameters.FolderName",
+								"type": "Expression"
+							},
+							"filename": " ",
+							"sheet": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "filter xlsx type file",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get_Filename",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_Filename').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name,pipeline().parameters.FlieType)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "filter xlsx type file",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('filter xlsx type file').output.Value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "GET Modified Date",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adf_blob_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"containname": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"foldername": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "GET Modified Date",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(activity('GET Modified Date').output.lastModified,activity('Get_LastModified_Date').output.firstRow.file_last_modify_time)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data1_copy1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "ExcelSource",
+												"additionalColumns": [
+													{
+														"name": "file_name",
+														"value": {
+															"value": "@item().name",
+															"type": "Expression"
+														}
+													},
+													{
+														"name": "file_last_modify_time",
+														"value": {
+															"value": "@addHours(activity('GET Modified Date').output.lastModified,8)",
+															"type": "Expression"
+														}
+													}
+												],
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												}
+											},
+											"sink": {
+												"type": "SqlServerSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "Id",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "product_id"
+														}
+													},
+													{
+														"source": {
+															"name": "file_name",
+															"type": "String"
+														},
+														"sink": {
+															"name": "file_name"
+														}
+													},
+													{
+														"source": {
+															"name": "file_last_modify_time",
+															"type": "String"
+														},
+														"sink": {
+															"name": "file_last_modify_time"
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "adf_blob_fzx",
+												"type": "DatasetReference",
+												"parameters": {
+													"containname": {
+														"value": "@pipeline().parameters.ContainName",
+														"type": "Expression"
+													},
+													"foldername": {
+														"value": "@pipeline().parameters.FolderName",
+														"type": "Expression"
+													},
+													"filename": {
+														"value": "@item().name",
+														"type": "Expression"
+													},
+													"sheet": "Sheet1"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "adf_mssql_fzx",
+												"type": "DatasetReference",
+												"parameters": {
+													"SchemaName": {
+														"value": "@pipeline().parameters.SchemaName",
+														"type": "Expression"
+													},
+													"TableName": {
+														"value": "@pipeline().parameters.TableName",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Description",
+				"description": "使用方案二\n1.使用查找获取数据库表中最大文件修改日期\n2.使用获取源数据   获取在blob中文件名称\n3.使用filter筛选xlsx文件\n4.使用if 判断条件将最后修改日期小于数据库中最大修改日期的文件跳过\n5.遍历文件，将blob中文件修改日期作为字段值插入表中",
+				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"scripts": [],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "Sales_fzx/test_sales_fzx"
+			},
+			"SchemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"TableName": {
+				"type": "string",
+				"defaultValue": "adfdemo_stg_sales"
+			},
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FlieType": {
+				"type": "string",
+				"defaultValue": ".xlsx"
+			},
+			"dbName": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"PlanId": {
+				"type": "string",
+				"defaultValue": "Plan1"
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-07T02:23:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

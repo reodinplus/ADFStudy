@@ -1,0 +1,116 @@
+{
+	"name": "increament_asql_to_asql_data_source_table_cjw",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Max LastModifyTime",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(LastModifytime),'1900-01-01') MaxLastModifytime FROM [dbo].[data_destination_table_cjw]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "adfdemo_asql_ds_cjw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_source_table_cjw"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup Max LastModifyTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{'dbo'}.@{'data_source_table_cjw'}"
+					},
+					{
+						"name": "Destination",
+						"value": "@{'dbo'}.@{'data_destination_table_cjw'}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT * FROM dbo.data_source_table_cjw WHERE LastModifytime > '@{activity('Lookup Max LastModifyTime').output.firstRow.MaxLastModifytime}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adfdemo_asql_ds_src_cjw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_source_table_cjw"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adfdemo_asql_ds_cjw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_destination_table_cjw"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "pipeline_cjw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-11-12T02:21:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

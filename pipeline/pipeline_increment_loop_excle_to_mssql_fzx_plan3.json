@@ -1,0 +1,564 @@
+{
+	"name": "pipeline_increment_loop_excle_to_mssql_fzx_plan3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get filename",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adf_blob_fzx",
+						"type": "DatasetReference",
+						"parameters": {
+							"containname": {
+								"value": "@pipeline().parameters.ContainName",
+								"type": "Expression"
+							},
+							"foldername": {
+								"value": "@pipeline().parameters.FolderName",
+								"type": "Expression"
+							},
+							"filename": " ",
+							"sheet": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "filter xlsx type file2",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get filename",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get filename').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name,pipeline().parameters.FlieType)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "filter xlsx type file2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('filter xlsx type file2').output.Value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "GET Modified Date",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adf_blob_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"containname": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"foldername": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "GET Modified Date",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"additionalColumns": [
+										{
+											"name": "file_name",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "file_last_modify_time",
+											"value": {
+												"value": "@addHours(activity('GET Modified Date').output.lastModified,8)",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "Id",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"name": "product_id"
+											}
+										},
+										{
+											"source": {
+												"name": "file_name",
+												"type": "String"
+											},
+											"sink": {
+												"name": "file_name"
+											}
+										},
+										{
+											"source": {
+												"name": "file_last_modify_time",
+												"type": "String"
+											},
+											"sink": {
+												"name": "file_last_modify_time"
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adf_blob_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"containname": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"foldername": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"sheet": "Sheet1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adf_mssql_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@pipeline().parameters.SchemaName",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@pipeline().parameters.TableName",
+											"type": "Expression"
+										},
+										"HostName": "SHOKA",
+										"dbName": "test"
+									}
+								}
+							]
+						},
+						{
+							"name": "Move Success File",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "adf_blob_Binary_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"ContainName": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"Filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adf_blob_Binary_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"ContainName": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@pipeline().parameters.SuccessPath",
+											"type": "Expression"
+										},
+										"Filename": {
+											"value": "@concat(replace(item().name,'.xlsx','_'),substring(replace(replace(replace(utcNow(),'-',''),':',''),'T',''),0,12),'.xlsx')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Delete1",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Move Success File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adf_blob_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"containname": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"foldername": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item.name",
+											"type": "Expression"
+										},
+										"sheet": "Sheet1"
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Move Failed File",
+							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "adf_blob_Binary_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"ContainName": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"Filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adf_blob_Binary_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"ContainName": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@pipeline().parameters.FailPath",
+											"type": "Expression"
+										},
+										"Filename": {
+											"value": "@concat(replace(item().name,'.xlsx','_'),substring(replace(replace(replace(utcNow(),'-',''),':',''),'T',''),0,12),'.xlsx')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Delete2",
+							"type": "Delete",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [
+								{
+									"activity": "Move Failed File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "adf_blob_fzx",
+									"type": "DatasetReference",
+									"parameters": {
+										"containname": {
+											"value": "@pipeline().parameters.ContainName",
+											"type": "Expression"
+										},
+										"foldername": {
+											"value": "@pipeline().parameters.FolderName",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item.name",
+											"type": "Expression"
+										},
+										"sheet": "Sheet1"
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "Sales_fzx/test_sales_fzx"
+			},
+			"SchemaName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"TableName": {
+				"type": "string",
+				"defaultValue": "adfdemo_stg_sales"
+			},
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FlieType": {
+				"type": "string",
+				"defaultValue": ".xlsx"
+			},
+			"dbName": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"PlanId": {
+				"type": "string",
+				"defaultValue": "Plan1"
+			},
+			"SuccessPath": {
+				"type": "string",
+				"defaultValue": "Sales_fzx/Success"
+			},
+			"FailPath": {
+				"type": "string",
+				"defaultValue": "Sales_fzx/Failed"
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-07T10:05:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

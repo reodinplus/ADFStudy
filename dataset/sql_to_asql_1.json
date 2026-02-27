@@ -1,0 +1,53 @@
+{
+	"name": "sql_to_asql_1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adedemo_dataset_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tablename": {
+				"type": "string",
+				"defaultValue": "dbo.stg_Sales_yz"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "productName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "salesAmount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "updateDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().tablename,'.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().tablename,'.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

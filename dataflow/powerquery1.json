@@ -1,0 +1,23 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"folder": {
+			"name": "powerquery_xwx"
+		},
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "adfdemo_blob_ds_powerquery",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> adfdemo_blob_ds_powerquery",
+					"dataset": {
+						"referenceName": "adfdemo_blob_ds_pq_addressdata",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared adfdemo_blob_ds_powerquery = let AdfDoc = AzureStorage.BlobContents(\"https://storagestudy.blob.core.windows.net/adfdemo/xsalex/addressdata/success/地点数据.xlsx\"), Excel = Excel.Workbook(AdfDoc),\r\n  #\"已展开 Data\" = Table.ExpandTableColumn(Excel, \"Data\", {\"Column1\", \"Column2\", \"Column3\", \"Column4\", \"城市\", \"省/自治区\", \"地区\", \"国家\"}, {\"Data.Column1\", \"Data.Column2\", \"Data.Column3\", \"Data.Column4\", \"Data.城市\", \"Data.省/自治区\", \"Data.地区\", \"Data.国家\"}),\r\n  已提升标题 = Table.PromoteHeaders(#\"已展开 Data\", [PromoteAllScalars = true]),\r\n  删除的其他列 = Table.SelectColumns(已提升标题, {\"城市\", \"省/自治区\", \"地区\", \"国家\"}),\r\n  已筛选行 = Table.SelectRows(删除的其他列, each ([#\"省/自治区\"] <> null)),\r\n  已更改列类型 = Table.TransformColumnTypes(已筛选行, {{\"城市\", type text}, {\"省/自治区\", type text}, {\"地区\", type text}, {\"国家\", type text}}) in 已更改列类型;\r\nshared UserQuery = let Source = #\"adfdemo_blob_ds_powerquery\" in Source;\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}

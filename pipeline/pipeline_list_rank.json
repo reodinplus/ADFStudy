@@ -1,0 +1,461 @@
+{
+	"name": "pipeline_list_rank",
+	"properties": {
+		"activities": [
+			{
+				"name": "traversal_list",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.arrayt",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set item",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "t1",
+								"value": {
+									"value": "@int(item())",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Compare number",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Set item",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(variables('t1'),variables('t2'))",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Set variable11",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "array",
+											"value": {
+												"value": "@union(variables('array2'),array(variables('t1')))",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Set variable12",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Set variable11",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "array2",
+											"value": {
+												"value": "@variables('array')",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Set t2 equal the greater number",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Set a2 equal a1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "t2",
+											"value": {
+												"value": "@variables('t1')",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "add less number",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "array",
+											"value": {
+												"value": "@union(variables('array2'),array(variables('t2')))",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Set a2 equal a1",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "add less number",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "array2",
+											"value": {
+												"value": "@variables('array')",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable16",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "traversal_list",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "array2",
+					"value": []
+				}
+			},
+			{
+				"name": "Set variable17",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable16",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "arraylist",
+					"value": {
+						"value": "@split(replace(replace(replace(string(variables('array')),'[0]',''),'[0,',''),']',''),',')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable18",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable17",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "array2",
+					"value": []
+				}
+			},
+			{
+				"name": "Set variable19",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable18",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "a1",
+					"value": {
+						"value": "@union(variables('a2'),array(variables('t2')))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable20",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable19",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "a2",
+					"value": {
+						"value": "@variables('a1')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable21",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable20",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "array",
+							"value": {
+								"type": "Expression",
+								"content": "@variables('arraylist')"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "Set variable17_copy1",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Set variable16",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@string(variables('array'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable22",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable21",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "arrayresult",
+							"value": {
+								"type": "Expression",
+								"content": "@variables('a1')"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			}
+		],
+		"parameters": {
+			"DBName": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"SchemeName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "ssisfile"
+			},
+			"FileType": {
+				"type": "string",
+				"defaultValue": "xlsx"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "*"
+			},
+			"arrayt": {
+				"type": "array",
+				"defaultValue": [
+					1,
+					2
+				]
+			}
+		},
+		"variables": {
+			"filename": {
+				"type": "String",
+				"defaultValue": "test"
+			},
+			"arraylist": {
+				"type": "Array",
+				"defaultValue": [
+					"11",
+					"2",
+					"7"
+				]
+			},
+			"test": {
+				"type": "String"
+			},
+			"array": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"array2": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"t1": {
+				"type": "Integer"
+			},
+			"t2": {
+				"type": "Integer",
+				"defaultValue": 0
+			},
+			"t3": {
+				"type": "String"
+			},
+			"t4": {
+				"type": "String"
+			},
+			"a1": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"a2": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"flag": {
+				"type": "Integer",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-06T10:01:32Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

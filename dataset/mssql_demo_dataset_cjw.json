@@ -1,0 +1,57 @@
+{
+	"name": "mssql_demo_dataset_cjw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mssql_demo_cjw",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "test"
+			}
+		},
+		"parameters": {
+			"scheamName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"tableName": {
+				"type": "string",
+				"defaultValue": "employee_cjw"
+			},
+			"dbName": {
+				"type": "string",
+				"defaultValue": "test"
+			}
+		},
+		"folder": {
+			"name": "database_cjw"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().scheamName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

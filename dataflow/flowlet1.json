@@ -1,0 +1,30 @@
+{
+	"name": "flowlet1",
+	"properties": {
+		"folder": {
+			"name": "dataflow_xwx"
+		},
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "input1"
+				},
+				{
+					"name": "output1"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          id as integer,",
+				"          name as string",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> input1",
+				"input1 output() ~> output1"
+			]
+		}
+	}
+}

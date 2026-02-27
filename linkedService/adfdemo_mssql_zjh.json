@@ -1,0 +1,16 @@
+{
+	"name": "adfdemo_mssql_zjh",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=PROFECT;initial catalog=Pracatise;user id=sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3MDVjMmJiMy0zYjY0LTQwYmItOGVmMC1jMThiOGU3MzgzYmMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime9",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

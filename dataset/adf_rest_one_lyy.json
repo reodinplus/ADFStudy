@@ -1,0 +1,16 @@
+{
+	"name": "adf_rest_one_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_rest_lyy",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

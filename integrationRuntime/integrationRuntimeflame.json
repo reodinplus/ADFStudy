@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeflame",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

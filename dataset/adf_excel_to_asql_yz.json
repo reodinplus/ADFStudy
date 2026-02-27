@@ -1,0 +1,101 @@
+{
+	"name": "adf_excel_to_asql_yz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_excel_to_asql_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "ssisfile/订单数据"
+			},
+			"file": {
+				"type": "string",
+				"defaultValue": "订单数据.xlsx"
+			},
+			"sheetname": {
+				"type": "string",
+				"defaultValue": "Sheet1"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheetname",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "订单ID",
+				"type": "String"
+			},
+			{
+				"name": "订单日期",
+				"type": "String"
+			},
+			{
+				"name": "发货日期",
+				"type": "String"
+			},
+			{
+				"name": "邮寄方式",
+				"type": "String"
+			},
+			{
+				"name": "客户ID",
+				"type": "String"
+			},
+			{
+				"name": "城市",
+				"type": "String"
+			},
+			{
+				"name": "产品ID",
+				"type": "String"
+			},
+			{
+				"name": "销售额",
+				"type": "String"
+			},
+			{
+				"name": "数量",
+				"type": "String"
+			},
+			{
+				"name": "折扣",
+				"type": "String"
+			},
+			{
+				"name": "利润",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

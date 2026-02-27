@@ -1,0 +1,46 @@
+{
+	"name": "Sale",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"bolbname": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"dicretory": {
+				"type": "string",
+				"defaultValue": "Sales_L"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "Sales_2020.xlsx"
+			}
+		},
+		"folder": {
+			"name": "Dataset_L"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dicretory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().bolbname",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

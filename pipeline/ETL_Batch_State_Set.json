@@ -1,0 +1,68 @@
+{
+	"name": "ETL_Batch_State_Set",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set Batch State",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": {
+						"value": "@variables('BatchUpdateProcName')",
+						"type": "Expression"
+					},
+					"storedProcedureParameters": {
+						"BatchId": {
+							"value": {
+								"value": "@pipeline().parameters.BatchId",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"StateId": {
+							"value": {
+								"value": "@pipeline().parameters.StateId",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_DW",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"BatchId": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"StateId": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"variables": {
+			"BatchUpdateProcName": {
+				"type": "String",
+				"defaultValue": "dbo.USP_ETL_Batch_Update"
+			}
+		},
+		"folder": {
+			"name": "1-Utils Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-29T11:12:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

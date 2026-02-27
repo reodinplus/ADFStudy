@@ -1,0 +1,39 @@
+{
+	"name": "adfdemo_mssql_jbl",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"dbName": {
+				"type": "string",
+				"defaultValue": "SQL"
+			},
+			"user": {
+				"type": "string",
+				"defaultValue": "sa"
+			},
+			"password": {
+				"type": "string",
+				"defaultValue": "123456"
+			},
+			"server": {
+				"type": "string",
+				"defaultValue": "10.0.0.109"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "@{linkedService().server}",
+			"database": "@{linkedService().dbName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().user}",
+			"password": "@{linkedService().password}"
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime4",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

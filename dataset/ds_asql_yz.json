@@ -1,0 +1,49 @@
+{
+	"name": "ds_asql_yz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adedemo_dataset_yz",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableNameWithSchema": {
+				"type": "string",
+				"defaultValue": "dbo.order_data_yz"
+			}
+		},
+		"folder": {
+			"name": "database_yz"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "产品ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "产品名称",
+				"type": "nvarchar"
+			},
+			{
+				"name": "子类别",
+				"type": "nvarchar"
+			},
+			{
+				"name": "类别",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@split(dataset().TableNameWithSchema,'.')[0]",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@split(dataset().TableNameWithSchema,'.')[1]",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

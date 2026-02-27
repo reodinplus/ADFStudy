@@ -1,0 +1,46 @@
+{
+	"name": "Backup_files_source_lyy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Backup_file_lyy",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"blob": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"dicretory": {
+				"type": "string",
+				"defaultValue": "Sales_lyy"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "Sales_2021.xlsx"
+			}
+		},
+		"folder": {
+			"name": "database_lyy"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dicretory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().blob",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

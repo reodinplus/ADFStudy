@@ -1,0 +1,36 @@
+{
+	"name": "trigger1_cjw",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "asql_to_asql_stg_adfdemo_object",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 15,
+				"startTime": "2025-08-15T03:46:00",
+				"timeZone": "China Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						8
+					],
+					"monthDays": [
+						2,
+						-1
+					]
+				}
+			}
+		}
+	}
+}

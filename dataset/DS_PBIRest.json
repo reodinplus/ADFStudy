@@ -1,0 +1,36 @@
+{
+	"name": "DS_PBIRest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "PBIRest",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"workspaceID": {
+					"value": "@dataset().workspaceID",
+					"type": "Expression"
+				},
+				"datasetID": {
+					"value": "@dataset().datasetID",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"workspaceID": {
+				"type": "string",
+				"defaultValue": "bd1f664e-4c78-4563-a743-211e59c115a1"
+			},
+			"datasetID": {
+				"type": "string",
+				"defaultValue": "1639ab06-22d3-45b9-875c-fe85cf574c57"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

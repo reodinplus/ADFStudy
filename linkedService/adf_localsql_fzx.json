@@ -1,0 +1,31 @@
+{
+	"name": "adf_localsql_fzx",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"hostname": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"dbname": {
+				"type": "string",
+				"defaultValue": "SSIS"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "@{linkedService().hostname}",
+			"database": "@{linkedService().dbname}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiNzRlOGY5OC1hM2E3LTRlNTItYWZlYy01YjlhNTU1Nzk1NzQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime8",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

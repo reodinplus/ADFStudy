@@ -1,0 +1,22 @@
+{
+	"name": "PBIRest",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"workspaceID": {
+				"type": "string"
+			},
+			"datasetID": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.powerbi.com/v1.0/myorg/groups/@{linkedService().workspaceID}/datasets/@{linkedService().datasetID}/executeQueries\n",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "ManagedServiceIdentity",
+			"aadResourceId": "https://analysis.windows.net/powerbi/api"
+		}
+	}
+}

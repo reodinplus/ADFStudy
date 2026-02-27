@@ -1,0 +1,23 @@
+{
+	"name": "powerquery2",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"folder": {
+			"name": "Powerquery_L"
+		},
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "adfdemo_test_excel_L",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> adfdemo_test_excel_L",
+					"dataset": {
+						"referenceName": "adfdemo_test_excel_L",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared adfdemo_test_excel_L = let AdfDoc = AzureStorage.BlobContents(\"https://storagestudy.blob.core.windows.net/adfdemo/xsalex/customdata/success/客户数据.xlsx\"), Excel = Excel.Workbook(AdfDoc),\r\n  #\"已展开 Data\" = Table.ExpandTableColumn(Excel, \"Data\", {\"客户ID\", \"客户名称\", \"性别\", \"年龄\", \"细分\", \"职业\", \"行业\"}, {\"客户ID\", \"客户名称\", \"性别\", \"年龄\", \"细分\", \"职业\", \"行业\"}),\r\n  已筛选行 = Table.SelectRows(#\"已展开 Data\", each ([Name] = \"客户\")),\r\n  已重命名列 = Table.RenameColumns(已筛选行, {{\"Name\", \"file-name\"}}),\r\n  已更改列类型 = Table.TransformColumnTypes(已重命名列, {{\"file-name\", type text}, {\"客户ID\", type text}, {\"客户名称\", type text}, {\"性别\", type text}, {\"年龄\", Int64.Type}, {\"细分\", type text}, {\"职业\", type text}, {\"行业\", type text}, {\"Item\", type text}, {\"Kind\", type text}, {\"Hidden\", type logical}}) in 已更改列类型;\r\nshared UserQuery = let Source = #\"adfdemo_test_excel_L\" in Source;\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}

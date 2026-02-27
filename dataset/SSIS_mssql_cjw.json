@@ -1,0 +1,36 @@
+{
+	"name": "SSIS_mssql_cjw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SSIS_mssql_cjw",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "Product"
+			}
+		},
+		"folder": {
+			"name": "database_cjw"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

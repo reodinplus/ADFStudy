@@ -1,0 +1,209 @@
+{
+	"name": "Copy_Single_USP_Template",
+	"properties": {
+		"activities": [
+			{
+				"name": "Exec Store Procedure",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Get ProcessId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": {
+						"value": "@pipeline().parameters.ProcName",
+						"type": "Expression"
+					},
+					"storedProcedureParameters": {
+						"BatchId": {
+							"value": {
+								"value": "@pipeline().parameters.BatchId",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_DW",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Get ProcessId",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_Get",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"BatchId": {
+							"value": "@pipeline().parameters.BatchId",
+							"type": "Expression"
+						},
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"TableName": {
+							"value": "@pipeline().parameters.ProcName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set Process Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Exec Store Procedure",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ProcessId": {
+							"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+							"type": "Expression"
+						},
+						"StateId": 2
+					}
+				}
+			},
+			{
+				"name": "Set Process Failed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Exec Store Procedure",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Process_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ProcessId": {
+							"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+							"type": "Expression"
+						},
+						"StateId": 3
+					}
+				}
+			},
+			{
+				"name": "Log Process SP Error",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Exec Store Procedure",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Error_Log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ActivityName": {
+							"value": "@concat(\n    activity('Exec Store Procedure').activityRunId,\n    ':', \n    pipeline().parameters.ProcName\n)",
+							"type": "Expression"
+						},
+						"BatchId": {
+							"value": "@pipeline().parameters.BatchId",
+							"type": "Expression"
+						},
+						"ErrorCode": {
+							"value": "@activity('Exec Store Procedure').error.errorCode",
+							"type": "Expression"
+						},
+						"ErrorMsg": {
+							"value": "@activity('Exec Store Procedure').error.message",
+							"type": "Expression"
+						},
+						"ErrorType": {
+							"value": "@activity('Exec Store Procedure').error.failureType",
+							"type": "Expression"
+						},
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"ProcessId": {
+							"value": "@activity('Get ProcessId').output.pipelineReturnValue.ProcessId",
+							"type": "Expression"
+						},
+						"TableName": {
+							"value": "@replace(toLower(pipeline().parameters.ProcName), 'usp_', '')",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"ProcName": {
+				"type": "string",
+				"defaultValue": "dbo.USP_ODS_demo_objects"
+			},
+			"BatchId": {
+				"type": "int",
+				"defaultValue": 0
+			}
+		},
+		"folder": {
+			"name": "0-Template Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-30T03:49:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

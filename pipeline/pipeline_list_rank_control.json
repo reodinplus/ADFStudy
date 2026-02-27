@@ -1,0 +1,156 @@
+{
+	"name": "pipeline_list_rank_control",
+	"properties": {
+		"activities": [
+			{
+				"name": "Until2",
+				"type": "Until",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('arraylist'),[])",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pipeline_list_rank",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"arrayt": {
+										"value": "@variables('arraylist')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set variable6",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute Pipeline1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "arraylist",
+								"value": {
+									"value": "@activity('Execute Pipeline1').output.pipelineReturnValue.array",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable7",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set variable6",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "arrayresult",
+								"value": {
+									"value": "@activity('Execute Pipeline1').output.pipelineReturnValue.arrayresult",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"DBName": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"HostName": {
+				"type": "string",
+				"defaultValue": "SHOKA"
+			},
+			"SchemeName": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"ContainName": {
+				"type": "string",
+				"defaultValue": "adfdemo"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "ssisfile"
+			},
+			"FileType": {
+				"type": "string",
+				"defaultValue": "xlsx"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "*"
+			}
+		},
+		"variables": {
+			"filename": {
+				"type": "String",
+				"defaultValue": "test"
+			},
+			"arraylist": {
+				"type": "Array",
+				"defaultValue": [
+					1,
+					2,
+					4
+				]
+			},
+			"test": {
+				"type": "String"
+			},
+			"array": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"array2": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"arrayresult": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "pipeline_fzx"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-06T10:01:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

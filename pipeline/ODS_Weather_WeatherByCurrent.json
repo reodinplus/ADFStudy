@@ -1,0 +1,543 @@
+{
+	"name": "ODS_Weather_WeatherByCurrent",
+	"properties": {
+		"activities": [
+			{
+				"name": "p_ETL_TruncateTable",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[p_ETL_Truncate_STG_WeatherByCurrent]"
+				},
+				"linkedServiceName": {
+					"referenceName": "WeatherByCurrent_AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "LookupURL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "p_ETL_TruncateTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "WeatherByCurrent_AzureSqlTable",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "Web_WeatherAPI"
+						}
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Web_WeatherAPI_WeatherByCurrent",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "LookupURL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"Authorization": "APPCODE 5286415b30a84eddb01d1e45ece1963c"
+					},
+					"url": {
+						"value": "@if(equals(activity('LookupURL').output.firstRow.Get_Type, 'GetWeatherByCurrent'),activity('LookupURL').output.firstRow.URL, null)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "STG_WeatherAPI_WeatherByCurrent",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Web_WeatherAPI_WeatherByCurrent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "dbo.Test"
+					},
+					{
+						"name": "Destination",
+						"value": "@{'dbo'}.@{'STG_WeatherAPI_WeatherByCurrent'}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "DECLARE @JsonStr NVARCHAR(MAX)= N'@{string(activity('Web_WeatherAPI_WeatherByCurrent').output)}'\nselect T1.Date,\n       T1.Weather,\n       T1.MinTemperature + N' °C' AS MinTemperature,\n       T1.MaxTemperature + N' °C' AS MaxTemperature,\n       T1.Temperature + N' °C' AS Temperature,\n       CASE\n            WHEN T1.Week = 1 THEN N'星期一'\n            WHEN T1.Week = 2 THEN N'星期二'\n            WHEN T1.Week = 3 THEN N'星期三'\n            WHEN T1.Week = 4 THEN N'星期四'\n            WHEN T1.Week = 5 THEN N'星期五'\n            WHEN T1.Week = 6 THEN N'星期六'\n            WHEN T1.Week = 7 THEN N'星期日'\n            else 'Invalid Day'\n       END AS Week,\n       T1.Humidity,\n       T1.Air,\n       T1.AirLevel,\n       T1.CarwashDesc,\n       T1.CarwashLevel,\n       T1.DressingDesc,\n       T1.DressingLevel,\n       T1.ExerciseDesc,\n       T1.ExerciseLevel,\n       T1.FluDesc,\n       T1.FluLevel,\n       T1.PM25 + N' ug/m³' AS PM25,\n       T1.PM10 + N' ug/m³' AS PM10,\n       T1.Pressure,\n       T1.Wind,\n       T1.speed,\n       T1.UmbrellaDesc,\n       T1.UmbrellaLevel,\n       T1.UpdateTime,\n       T1.UvDesc,\n       T1.UvLevel,\n       CONVERT(nvarchar(250), NULL) AS  Visibility,\n       dateadd(hour ,8,getdate()) as DWInsertDate,\n       dateadd(hour ,8,getdate()) as  DWUpdateDate,\n       N'南京' AS Area\nfrom OPENJSON(@JsonStr,'$.showapi_res_body')\nwith (\n    Date date '$.f1.day',\n    Weather NVARCHAR(250) '$.now.weather',\n    MinTemperature nvarchar(250) '$.f1.night_air_temperature',\n    MaxTemperature nvarchar(250) '$.f1.day_air_temperature',\n    Temperature nvarchar(250) '$.now.temperature',\n    Week nvarchar(250) '$.f1.weekday',\n    Humidity nvarchar(250) '$.now.sd',\n    Air nvarchar(250) '$.now.aqi',\n    AirLevel nvarchar(250) '$.now.aqiDetail.quality',\n    CarwashDesc nvarchar(250) '$.f1.index.wash_car.desc',\n    CarwashLevel nvarchar(250) '$.f1.index.wash_car.title',\n    DressingDesc nvarchar(250) '$.f1.index.clothes.desc',\n    DressingLevel nvarchar(250) '$.f1.index.clothes.title',\n    ExerciseDesc nvarchar(250) '$.f1.index.sports.desc',\n    ExerciseLevel nvarchar(250) '$.f1.index.sports.title',\n    FluDesc nvarchar(250) '$.f1.index.cold.desc',\n    FluLevel nvarchar(250) '$.f1.index.cold.title',\n    PM25 nvarchar(250) '$.now.aqiDetail.pm2_5',\n    PM10 nvarchar(250) '$.now.aqiDetail.pm10',\n    Pressure nvarchar(250) '$.f1.air_press',\n    Wind nvarchar(250) '$.now.wind_direction',\n    speed nvarchar(250) '$.now.wind_power',\n    UmbrellaDesc nvarchar(250) '$.f1.index.gj.desc',\n    UmbrellaLevel nvarchar(250) '$.f1.index.gj.title',\n    UpdateTime nvarchar(250) '$.now.temperature_time',\n    UvDesc nvarchar(250) '$.f1.index.uv.desc',\n    UvLevel nvarchar(250) '$.f1.index.uv.title',\n    Visibility nvarchar(250) '$'\n\n) as T1",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "Weather",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Weather",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "MinTemperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "MinTemperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "MaxTemperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "MaxTemperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Temperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Temperature",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Week",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Week",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Humidity",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Humidity",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Air",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Air",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "AirLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "AirLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CarwashDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "CarwashDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CarwashLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "CarwashLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "DressingDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "DressingDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "DressingLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "DressingLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ExerciseDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "ExerciseDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ExerciseLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "ExerciseLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FluDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "FluDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FluLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "FluLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PM25",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "PM25",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PM10",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "PM10",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Pressure",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Pressure",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Wind",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Wind",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "speed",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "speed",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UmbrellaDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "UmbrellaDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UmbrellaLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "UmbrellaLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UpdateTime",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "UpdateTime",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UvDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "UvDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UvLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "UvLevel",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Visibility",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Visibility",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "DWInsertDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "DWInsertDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "DWUpdateDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "DWUpdateDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "Area",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "area",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adf_demo_asql_dataset_Test",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "WeatherByCurrent_AzureSqlTable",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "STG_WeatherAPI_WeatherByCurrent"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "pipeline_jbl"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-30T03:56:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

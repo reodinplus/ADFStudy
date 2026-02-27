@@ -1,0 +1,47 @@
+{
+	"name": "parent",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "child",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": false
+				}
+			}
+		],
+		"parameters": {
+			"nums": {
+				"type": "array",
+				"defaultValue": [
+					10,
+					20
+				]
+			}
+		},
+		"variables": {
+			"numArray": {
+				"type": "Array",
+				"defaultValue": [
+					4,
+					5
+				]
+			}
+		},
+		"folder": {
+			"name": "pipeline_dingzhiyou"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-21T09:35:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

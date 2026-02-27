@@ -1,0 +1,34 @@
+{
+	"name": "adfdemo_blob_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf_demo_storage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_tx"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "employee.xlsx",
+				"container": "adfdemo"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

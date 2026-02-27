@@ -1,0 +1,40 @@
+{
+	"name": "adfdemo_mssql_dataset_Student_jbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_mssql_jbl",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "SQL",
+				"user": "sa",
+				"password": "123456",
+				"server": "10.0.0.179"
+			}
+		},
+		"folder": {
+			"name": "dataset_jbl"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Sex",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Student"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

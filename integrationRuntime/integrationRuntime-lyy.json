@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntime-lyy",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

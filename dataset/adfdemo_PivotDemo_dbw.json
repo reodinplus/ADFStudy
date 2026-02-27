@@ -1,0 +1,51 @@
+{
+	"name": "adfdemo_PivotDemo_dbw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_storage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "PivotTDemo1.xlsx",
+				"folderPath": "Sales_dbw",
+				"container": "adfdemo"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "A",
+				"type": "String"
+			},
+			{
+				"name": "B ",
+				"type": "String"
+			},
+			{
+				"name": "C",
+				"type": "String"
+			},
+			{
+				"name": "D",
+				"type": "String"
+			},
+			{
+				"name": "E",
+				"type": "String"
+			},
+			{
+				"name": "F",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

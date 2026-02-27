@@ -1,0 +1,828 @@
+{
+	"name": "dataflow_test",
+	"properties": {
+		"folder": {
+			"name": "dataflow_xwx"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source4"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source5"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source6"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src_u",
+						"type": "DatasetReference"
+					},
+					"name": "source7"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source8"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source9"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src_u",
+						"type": "DatasetReference"
+					},
+					"name": "source10"
+				},
+				{
+					"linkedService": {
+						"referenceName": "adfdemo_asql_src",
+						"type": "LinkedServiceReference"
+					},
+					"name": "source11"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source12"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src_u",
+						"type": "DatasetReference"
+					},
+					"name": "source13"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source14"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source15"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source16"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source17"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source18"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "source19"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source20"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_src",
+						"type": "DatasetReference"
+					},
+					"name": "source21"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_rest_dataset_one",
+						"type": "DatasetReference"
+					},
+					"name": "source22"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_rest_dataset_one",
+						"type": "DatasetReference"
+					},
+					"name": "source23"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_rest_dataset_one",
+						"type": "DatasetReference"
+					},
+					"name": "source24"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_rest_dataset_one",
+						"type": "DatasetReference"
+					},
+					"name": "source25"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink5"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink6"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink7"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink8"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink9"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink10"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_emp_stg",
+						"type": "DatasetReference"
+					},
+					"name": "sink11"
+				},
+				{
+					"dataset": {
+						"referenceName": "adfdemo_asql_ds_rest_one",
+						"type": "DatasetReference"
+					},
+					"name": "sink12"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flowlet1",
+					"flowlet": {
+						"referenceName": "flowlet1",
+						"type": "DataFlowReference"
+					}
+				},
+				{
+					"name": "externalCall1",
+					"linkedService": {
+						"referenceName": "adfdemo_rest",
+						"type": "LinkedServiceReference"
+					}
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "rank1"
+				},
+				{
+					"name": "unpivot1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "assert1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "stringify1"
+				},
+				{
+					"name": "parse1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source3",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source4",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source5",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source6",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source7",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source8",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source9",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source10",
+				"source(output(",
+				"          name as string,",
+				"          class as string,",
+				"          score as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'query',",
+				"     store: 'sqlserver',",
+				"     query: 'select * from \\n(values\\n     (N\\'张三\\',N\\'语文\\',80),\\n     (N\\'张三\\',N\\'数学\\',85),\\n     (N\\'张三\\',N\\'英语\\',90),\\n     (N\\'李四\\',N\\'语文\\',70),\\n     (N\\'李四\\',N\\'数学\\',82),\\n     (N\\'李四\\',N\\'英语\\',null)\\n     ) t1 ([name],class,score)',",
+				"     isolationLevel: 'READ_UNCOMMITTED') ~> source11",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source12",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source13",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source14",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source15",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source16",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source17",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source18",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source19",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source20",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          last_modify_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source21",
+				"source(output(",
+				"          body as (code as short, data as (content as string, created_at as string, id as short, name as string, origin as string, tag as string, updated_at as string), error as string, updateTime as long),",
+				"          headers as [string,string]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     httpMethod: 'GET',",
+				"     timeout: 30,",
+				"     requestInterval: 0,",
+				"     paginationRules: ['supportRFC5988' -> 'true'],",
+				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source22",
+				"source(output(",
+				"          body as (code as short, data as (content as string, created_at as string, id as short, name as string, origin as string, tag as string, updated_at as string), error as string, updateTime as long),",
+				"          headers as [string,string]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     httpMethod: 'GET',",
+				"     timeout: 30,",
+				"     requestInterval: 0,",
+				"     paginationRules: ['supportRFC5988' -> 'true'],",
+				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source23",
+				"source(output(",
+				"          body as (code as short, data as (content as string, created_at as string, id as short, name as string, origin as string, tag as string, updated_at as string), error as string, updateTime as long),",
+				"          headers as [string,string]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     httpMethod: 'GET',",
+				"     timeout: 30,",
+				"     requestInterval: 0,",
+				"     paginationRules: ['supportRFC5988' -> 'true'],",
+				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source24",
+				"source(output(",
+				"          body as (code as short, data as (content as string, created_at as string, id as short, name as string, origin as string, tag as string, updated_at as string), error as string, updateTime as long),",
+				"          headers as [string,string]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     httpMethod: 'GET',",
+				"     timeout: 30,",
+				"     requestInterval: 0,",
+				"     paginationRules: ['supportRFC5988' -> 'true'],",
+				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source25",
+				"source21 compose(mapColumn(",
+				"          id,",
+				"          name",
+				"     ),",
+				"     composition: 'flowlet1') ~> flowlet1@(output1)",
+				"source25 call(mapColumn(",
+				"          data = body.data",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     output(",
+				"          headers as [string,string]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     format: 'rest',",
+				"     store: 'restservice',",
+				"     timeout: 30,",
+				"     requestInterval: 0,",
+				"     httpMethod: 'GET',",
+				"     headerColumnName: 'headers',",
+				"     bodyColumnName: 'data',",
+				"     requestFormat: ['type' -> 'json'],",
+				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> externalCall1",
+				"source1 select(mapColumn(",
+				"          each(match(name=='id'),",
+				"               'PRODUCTID' = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"source1 derive(des = 'new c',",
+				"          each(match(type=='integer'), $$ = round($$,0)+2)) ~> derivedColumn1",
+				"source1 aggregate(each(match(type=='integer'), 'cid' = count($$))) ~> aggregate1",
+				"source2, source3 exists(source2@id==source3@id,",
+				"     negate:true,",
+				"     broadcast: 'right')~> exists1",
+				"source4 filter(length(name)>4) ~> filter1",
+				"source5 split(id<3,",
+				"     id>4,",
+				"     disjoint: false) ~> split1@(id3, id4, other)",
+				"source6, source7 union(byName: true)~> union1",
+				"source8 sort(asc(name, true)) ~> sort1",
+				"source9, source10 join(source9@id == source10@id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'right')~> join1",
+				"source11 pivot(groupBy(name),",
+				"     pivotBy(class, ['语文', '数学', '英语']),",
+				"     {} = sum(score),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivot1",
+				"source12, source13 lookup(source12@id != source13@id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'right')~> lookup1",
+				"source14 keyGenerate(output(newid as long),",
+				"     startAt: 1L,",
+				"     stepValue: 2L) ~> surrogateKey1",
+				"source15 cast(output(",
+				"          last_modify_time as date",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"source16 rank(asc(name, true),",
+				"     caseInsensitive: true,",
+				"     output(newid as long),",
+				"     dense: true) ~> rank1",
+				"pivot1 unpivot(output(",
+				"          class as string,",
+				"          score as long",
+				"     ),",
+				"     ungroupBy(name),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"source17 window(over(name),",
+				"     newid = max(id)) ~> window1",
+				"source18, source19 assert(expectExists(source18@id == source19@id, false, 'assert1'),",
+				"     abort: true) ~> assert1",
+				"source20 alterRow(insertIf(length(name)>4)) ~> alterRow1",
+				"source22 stringify(data = body.data ? string,",
+				"     format: 'json') ~> stringify1",
+				"source23 parse(data = body.data ? (content as string[],",
+				"          id as short,",
+				"          tag as string[],",
+				"          name as string[],",
+				"          origin as string[],",
+				"          created_at as timestamp,",
+				"          updated_at as timestamp),",
+				"     format: 'json',",
+				"     documentForm: 'documentPerLine') ~> parse1",
+				"source24 foldDown(unroll(),",
+				"     mapColumn(",
+				"          body,",
+				"          headers",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          each(match(name=='PRODUCTID'),",
+				"               'id' = $$)",
+				"     )) ~> sink1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3",
+				"exists1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink4",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink5",
+				"split1@other sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink6",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink7",
+				"sort1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink8",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink9",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink10",
+				"flowlet1@output1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink11",
+				"stringify1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          tag as string,",
+				"          name as string,",
+				"          origin as string,",
+				"          content as string,",
+				"          create_at as string,",
+				"          update_at as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id = body.data.id,",
+				"          tag = body.data.tag,",
+				"          name = body.data.name,",
+				"          origin = body.data.origin,",
+				"          content = body.data.content,",
+				"          create_at = body.data.created_at,",
+				"          update_at = body.data.updated_at",
+				"     )) ~> sink12"
+			]
+		}
+	}
+}

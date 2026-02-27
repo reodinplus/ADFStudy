@@ -1,0 +1,37 @@
+{
+	"name": "adfdemo_asql_dataset_employee6",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst2",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": "sqldevswcd"
+			}
+		},
+		"folder": {
+			"name": "dataset_dbw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

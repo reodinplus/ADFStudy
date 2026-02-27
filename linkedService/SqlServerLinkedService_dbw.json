@@ -1,0 +1,39 @@
+{
+	"name": "SqlServerLinkedService_dbw",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"ServerName": {
+				"type": "string",
+				"defaultValue": "LAPTOP-S8J3UAH7"
+			},
+			"DBName": {
+				"type": "string",
+				"defaultValue": "sqldevswcd"
+			},
+			"UserName": {
+				"type": "string",
+				"defaultValue": "sa"
+			},
+			"Password": {
+				"type": "string",
+				"defaultValue": "123456"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "@{linkedService().ServerName}",
+			"database": "@{linkedService().DBName}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "@{linkedService().UserName}",
+			"password": "@{linkedService().Password}"
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime6",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

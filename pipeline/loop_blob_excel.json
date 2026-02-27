@@ -1,0 +1,156 @@
+{
+	"name": "loop_blob_excel",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"additionalColumns": [
+										{
+											"name": "Filename",
+											"value": "$$FILEPATH"
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@item().Directory",
+											"type": "Expression"
+										},
+										"wildcardFileName": {
+											"value": "*.xlsx",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adf_excel_to_asql_yz",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@item().Container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@item().Directory",
+											"type": "Expression"
+										},
+										"file": " ",
+										"sheetname": {
+											"value": "@item().SheetName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_asql_yz",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableNameWithSchema": {
+											"value": "@item().TableName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select 'adfdemo' as Container,N'ssisfile/产品数据' as Directory,'Sheet1' as SheetName,'Product_yz' as TableName\nunion all\nselect 'adfdemo',N'ssisfile/地点数据','Sheet1','location_yz'\nunion all\nselect 'adfdemo',N'ssisfile/订单数据','Sheet1','order_data_yz'\nunion all\nselect 'adfdemo',N'ssisfile/客户数据' ,'Sheet1','customer_yz'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_asql_yz",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableNameWithSchema": "order_data_yz"
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"variables": {
+			"id": {
+				"type": "String"
+			},
+			"id2": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "pipeline_yz"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-12-12T06:51:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

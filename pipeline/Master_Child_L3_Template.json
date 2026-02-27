@@ -1,0 +1,159 @@
+{
+	"name": "Master_Child_L3_Template",
+	"properties": {
+		"activities": [
+			{
+				"name": "SRC To ODS",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get BatchId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(1, 1)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Exec SP USP_ODS_demo_employee",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Copy_Single_USP_Utils",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"ProcName": "dbo.usp_ods_demo_objects",
+									"BatchId": {
+										"value": "@activity('Get BatchId').output.pipelineReturnValue.BatchId",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get BatchId",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Batch_Get",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ETLProjectName": {
+							"value": "@pipeline().parameters.ETLProjectName",
+							"type": "Expression"
+						},
+						"Caller": {
+							"value": "@pipeline().parameters.Caller",
+							"type": "Expression"
+						},
+						"ParentBatchId": {
+							"value": "@pipeline().parameters.ParentBatchId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set Batch Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SRC To ODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Batch_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"BatchId": {
+							"value": "@activity('Get BatchId').output.pipelineReturnValue.BatchId",
+							"type": "Expression"
+						},
+						"StateId": "2"
+					}
+				}
+			},
+			{
+				"name": "Set Batch Failed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SRC To ODS",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_Batch_State_Set",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"BatchId": {
+							"value": "@activity('Get BatchId').output.pipelineReturnValue.BatchId",
+							"type": "Expression"
+						},
+						"StateId": "3"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"ETLProjectName": {
+				"type": "string",
+				"defaultValue": "demo_L3"
+			},
+			"ParentBatchId": {
+				"type": "int"
+			},
+			"Caller": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "0-Template Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-12T09:41:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

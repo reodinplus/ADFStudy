@@ -1,0 +1,34 @@
+{
+	"name": "adfdemo_asql_dataset_wqw1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dataset",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_wqw"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee_wqw"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

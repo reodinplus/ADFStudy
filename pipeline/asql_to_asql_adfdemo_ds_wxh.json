@@ -1,0 +1,154 @@
+{
+	"name": "asql_to_asql_adfdemo_ds_wxh",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup LastModifyTime",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select isnull(max([LastModifytime]),'1900-01-01' )as Max_file_last_modifty_time from [dbo].[data_destination_table_wxh]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "asql_to_asql_ds_data_destination_table_wxh",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_destination_table_wxh"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup LastModifyTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{'dbo'}.@{'data_source_table_wxh'}"
+					},
+					{
+						"name": "Destination",
+						"value": "@{'dbo'}.@{'data_destination_table_wxh'}"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select * from [dbo].[data_source_table_wxh] where [LastModifytime] > '@{activity('Lookup LastModifyTime').output.firstRow.Max_file_last_modifty_time}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "PersonID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "PersonID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "LastModifytime",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "LastModifytime",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "asql_to_asql_ds_data_source_table_wxh",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_source_table_wxh"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "asql_to_asql_ds_data_destination_table_wxh",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "data_destination_table_wxh"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "pipeline_wxh"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-11T04:00:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

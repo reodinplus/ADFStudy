@@ -1,0 +1,51 @@
+{
+	"name": "adfdemo_sqlserver_TestDataSource_emplooyee",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_SqlServer_local_TestDataSource_lrs",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"dbName": {
+					"value": "@dataset().dbName",
+					"type": "Expression"
+				},
+				"schemaName": {
+					"value": "@dataset().schemaName",
+					"type": "Expression"
+				},
+				"tableName": {
+					"value": "@dataset().tableName",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"schemaName": {
+				"type": "string"
+			},
+			"tableName": {
+				"type": "string"
+			},
+			"dbName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "dataset_lrs"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

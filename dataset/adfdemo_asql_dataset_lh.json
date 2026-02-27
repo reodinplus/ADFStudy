@@ -1,0 +1,34 @@
+{
+	"name": "adfdemo_asql_dataset_lh",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfdemo_asql_dst_lh",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "database_lh"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirsrName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EmployeeDemo"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
